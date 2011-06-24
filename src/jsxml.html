@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>jsxml</title>
+</head>
+<body>
+<script src="jsxml.js"></script>
+<script>
+jsxml.parseXML("<xml>sss<a>a<e>e</e></a><b>b</b><c att='1'/></xml><p><![CDATA[what's <p></p>]]></p>", {
+
+	start: function(tagName, attrs, unary ) {
+		console.log("start:"+tagName);
+	},
+
+	end: function( tag ) {
+		console.log("end:"+tag);
+	},
+	chars: function( text ) {
+		console.log("chars:"+text);
+	},
+	comment: function( text ) {
+		console.log("comment:"+text);
+	}
+});
+</script>
+</body>
+</html>
