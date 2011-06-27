@@ -3,11 +3,29 @@
 <head>
 <meta charset="utf-8">
 <title>jsxml</title>
+<style>
+#log{
+	width:800px;
+	height:400px;
+}
+</style>
 </head>
 <body>
+<textarea id="log">[Log]</textarea>
 <script src="jsxml.js"></script>
+
 <script>
-jsxml.parseXML("<xml>sss<a>a<e>e</e></a><b>b</b><c att='1'/></xml><p><![CDATA[what's <p></p>]]></p>", {
+var console = (function(){
+
+	var ta = document.getElementById("log");
+
+	return {
+		log: function(info){
+			ta.value = ta.value +'\n' + info;
+		}
+	}
+})();
+jsxml.parseXML("<?xml version='1.0' encoding='utf-8'?><xml>sss<a>a<e>e</e><? instruction ?></a><b>b</b><c att='1'/></xml><p><![CDATA[what's <p></p>]]></p>", {
 
 	start: function(tagName, attrs, unary ) {
 		console.log("start:"+tagName);

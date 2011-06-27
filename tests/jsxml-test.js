@@ -3,9 +3,78 @@ YUI().use('test', function(Y){
 
 	var Assert = Y.Assert,
 		XML = jsxml.XML,
-		Namespace = jsxml.Namespace;
-		
-	var namespaceTestcase = new Y.Test.Case({
+		XMLList = jsxml.XMLList,
+		QName = jsxml.QName,
+		NodeKind = jsxml.NodeKind,
+		XMLNode = jsxml.XMLNode,
+		Namespace = jsxml.Namespace,
+		example = "<?xml version='1.0' encoding='utf-8'?>"
+			+"<xml>sss"
+				+"<a>a"
+					+"<e>e</e>"
+					+"<? instruction ?>"
+				+"</a>"
+				+"<b>b</b>"
+				+"<c att='1'/>"
+				+"<p><![CDATA[inner tag: @#?&<>;'<p></p>]]></p>"
+			 +"</xml>";
+	
+	//QName TestCase
+	var qnameTestCase = new Y.Test.Case({
+		name:"jsxml.QName Test Case",
+		testConstructor: function(){
+			Assert.isFunction(QName);
+			Assert.areEqual(QName, (new QName()).constructor);
+		},
+		testParams: function(){
+			var qn = new QName();
+			Assert.areEqual(qn.uri, "");
+			Assert.areEqual(qn.localName, "");
+
+			qn = new QName('A');
+			Assert.areEqual(qn.uri, "");
+			Assert.areEqual(qn.localName, "A");
+
+			qn = new QName(undefined, undefined);
+			Assert.areEqual(qn.uri, "undefined");
+			Assert.areEqual(qn.localName, "undefined");
+
+			qn = new QName(false, null);
+			Assert.areEqual(qn.uri, "false");
+			Assert.areEqual(qn.localName, "null");
+
+		},
+		testToString: function(){
+			var qn = new QName();
+			Assert.areEqual(qn.toString(), "");
+
+			qn = new QName("localName");
+			Assert.areEqual(qn.toString(), "localName");
+					
+			qn = new QName("uri", "localName");
+			Assert.areEqual(qn.toString(), "uri::localName");
+				
+			qn = new QName(new Namespace("prefix", "http://uri"), "localName");
+			Assert.areEqual(qn.toString(), "http://uri::localName");
+		}
+	});
+	//NodeKind TestCase
+	var nodekindTestCase = new Y.Test.Case({
+		name: "jsxml NodeKind Test Case",
+		testType: function(){
+			Assert.isObject(NodeKind);
+		},
+		testValue: function(){
+			Assert.areEqual(NodeKind.ELEMENT, 'element');
+			Assert.areEqual(NodeKind.COMMENT, 'comment');
+			Assert.areEqual(NodeKind.PROCESSING_INSTRUCTION, 'processing-instruction');
+			Assert.areEqual(NodeKind.TEXT, 'text');
+			Assert.areEqual(NodeKind.ATTRIBUTE, 'attribute');
+		}
+	});
+
+	//Namespace TestCase
+	var namespaceTestCase = new Y.Test.Case({
 		name: "jsxml.Namespace Test Case",
 		
 		testConstructor: function(){
@@ -42,6 +111,15 @@ YUI().use('test', function(Y){
 			Assert.areEqual(ns.uri, ns.toString());
 		}
 	});
+	//XMLNode TestCase
+	var xmlNodeTestCase = new Y.Test.Case({
+		name: "jsxml.XMLNode TestCase",
+		testConstructor: function(){
+			Assert.isFunction(XMLNode);
+			Assert.isTrue(XMLNode, (new XMLNode()).constructor);
+		}
+	});
+	//XML TestCase
 	var xmlTestCase = new Y.Test.Case({
 
 		name: "jsxml.XML TestCase",
@@ -72,7 +150,11 @@ YUI().use('test', function(Y){
 
 	});
 	
-	Y.Test.Runner.add(namespaceTestcase);
+	//Runner
+	Y.Test.Runner.add(qnameTestCase);
+	Y.Test.Runner.add(nodekindTestCase);
+	Y.Test.Runner.add(namespaceTestCase);
+	Y.Test.Runner.add(xmlNodeTestCase);
 	Y.Test.Runner.add(xmlTestCase);
 	Y.Test.Runner.run();
 	
