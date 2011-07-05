@@ -1,0 +1,166 @@
+<!doctype>
+<html>
+<head>
+<meta charset="utf-8">
+<title>jsxml example - D2 forum</title>
+<link  href="http://k.kbcdn.com/min/f=/k2/css/reset-1-0-0.css,/k2/css/color-1-0-2.css,/k2/css/common-1-0-1.css,/k2/css/grids-1-0-0.css" type="text/css" rel="stylesheet"> 
+</head>
+<style>
+#container{
+	text-align:left;
+}
+#container img,
+#container .summary{
+	float:left;
+	margin-right:10px;
+}
+#container .summary{
+	width: 650px;
+}
+#container .info{
+	padding-top:4px;
+	font-size:11px;
+}
+#container .user{
+	font-weight:bold;
+}
+#container .time{
+	color:#999;
+	margin-right:10px;
+	font-weight:normal;
+}
+#container li{
+	border-top:#999 1px dashed;
+	padding:5px 0;
+	*zoom:1;
+}
+#container li:after{
+	content:"\0020";
+	display:block;
+	height:0;
+	clear:both
+}
+#load-tweets{
+	-webkit-box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.1);
+	-moz-box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.1);
+	box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.1);
+	-webkit-transition: all 0.1s ease;
+	-moz-transition: all 0.1s ease;
+	-o-transition: all 0.1s ease;
+	line-height: 1.2;
+	background-color: #49A7F3;
+	display: inline-block;
+	padding: 12px 20px !important;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	border-radius: 4px;
+	color: white !important;
+	text-decoration: none;
+	border: none !important;
+	font-size: 22px;
+	font-weight: bold;
+	margin:5px 0 10px 0;
+	width:726px;
+}
+#load-tweets:hover { 
+	background-color: #82c7ff;
+}
+#load-tweets:active {
+	-webkit-box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.6); 
+	-moz-box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.6);
+	box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.6); 
+}
+</style>
+<body>
+<div class="k2-single" style="width:728px">
+	<h1><a href="http://www.d2forum.org/d2/6/" target="_blank"><img src="http://img03.taobaocdn.com/tps/i3/T1i6WgXgNiXXXXXXXX-728-90.jpg" width="728" height="90" alt="第六届 D2前端技术论坛 (7月9日·杭州)" /></a></h1>
+	<div><button id="load-tweets" href="#">搜索微博</button></div>
+	<div id="container"></div>
+</div>
+<script src="http://k.kbcdn.com/k2/seed/seed-1-3-12.js"></script>
+<script src="../src/jsxml.js"></script>
+<script>
+Date.prototype.pattern=function(fmt) {        
+    var o = {        
+    "M+" : this.getMonth()+1, //月份        
+    "d+" : this.getDate(), //日        
+    "h+" : this.getHours()%12 == 0 ? 12 : this.getHours()%12, //小时        
+    "H+" : this.getHours(), //小时        
+    "m+" : this.getMinutes(), //分        
+    "s+" : this.getSeconds(), //秒        
+    "q+" : Math.floor((this.getMonth()+3)/3), //季度        
+    "S" : this.getMilliseconds() //毫秒        
+    };        
+    var week = {        
+    "0" : "\u65e5",        
+    "1" : "\u4e00",        
+    "2" : "\u4e8c",        
+    "3" : "\u4e09",        
+    "4" : "\u56db",        
+    "5" : "\u4e94",        
+    "6" : "\u516d"       
+    };        
+    if(/(y+)/.test(fmt)){        
+        fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));        
+    }        
+    if(/(E+)/.test(fmt)){        
+        fmt=fmt.replace(RegExp.$1, ((RegExp.$1.length>1) ? (RegExp.$1.length>2 ? "\u661f\u671f" : "\u5468") : "")+week[this.getDay()+""]);        
+    }        
+    for(var k in o){        
+        if(new RegExp("("+ k +")").test(fmt)){        
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));        
+        }        
+    }        
+    return fmt;        
+}      
+
+
+YUI().use('node-base', 'io-base', 'substitute', function(Y){
+	var XML = jsxml.XML;
+	var init = function(data){
+		var xml = new XML(data),
+			list = xml.child("status"),
+			html = "",
+			tpl = "<li><img src='{image_src}'/><div class='summary'><span class='user'><a href='{user_href}' target='_blank'>{user}</a></span>：<span class='text'>{text}</span><div class='info'><b class='time'>{time}</b>来自<span class='source'>{source}</span></div></div></li>";
+		
+		list.each(function(item){
+			var date = new Date(item.child('created_at').getValue()),
+				screenName = item.child('user').child('screen_name').getValue(),
+				user_href = "http://weibo.com/n/"+screenName,
+				text = item.child('text').getValue();
+			
+			text = text.replace(/(http:[^\s:：()（），,。]+)/g, function(i){
+				return '<a href="'+ i+'" target="_blank">'+i+'</a>';
+			});
+			text = text.replace(/@([^\s:：()（），,.。]+)/g, function(i){
+				var screenName = i.substr(1);
+				return '<a href="http://weibo.com/n/' + screenName+'" target="_blank">@'+screenName+'</a>';
+			});
+			
+			html += Y.substitute(tpl, {
+				user:screenName,
+				user_href: user_href,
+				image_src: item.child('user').child('profile_image_url').getValue(), 
+				text: text,
+				source: item.child('source').toXMLString(),
+				time: date.pattern("yyyy-MM-dd hh:mm:ss")
+			});
+		});
+		Y.one('#container').setContent('<ul>'+html+'</ul>');
+	}
+
+	//entry point
+	Y.one("#load-tweets").on('click', function(){
+		Y.one('#container').setContent("正在搜索...");
+		Y.io("service.php", {
+			on:{ 
+				success:function(id, xhr){
+					init(xhr.responseText);
+				}
+			}
+		});
+	});
+});
+</script>
+</body>
+</html>
