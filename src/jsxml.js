@@ -1533,6 +1533,16 @@ var jsxml = (function(){
 		},
 		//================extension for javascript=========================
 		/**
+		 * @description compatible to XMLList
+		 * @access public
+		 * @param func{Function} callback function
+		 * @return void
+		 * @see XMLList.prototype.each
+		 */
+		 each: function(func){
+			 func(this, 0, this);
+		 },
+		/**
 		 * @description get the XML simple node value
 		 * @access public
 		 * @return String

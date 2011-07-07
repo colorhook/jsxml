@@ -463,9 +463,9 @@ YUI().use('test', function(Y){
 			Assert.areEqual(-1, xml.childIndex());
 
 			xml = new XML("<a><b>b</b><c>c</c></a>");
-			Assert.areEqual(XML, xml.child('b').constructor, 'the children b should be the XML');
-			Assert.areEqual(xml, xml.child('b')._parent, 'the children b\'s parent should be xml');
-			Assert.areEqual(xml._getFilterChildren()[0], xml.child('b'));
+			Assert.areSame(XML, xml.child('b').constructor, 'the children b should be the XML');
+			Assert.areSame(xml, xml.child('b')._parent, 'the children b\'s parent should be xml');
+			Assert.areEqual(xml._getFilterChildren()[0].toXMLString(), xml.child('b').toXMLString());
 			Assert.areEqual(0, xml.child('b').childIndex(), "the tag b should be the first tag");
 			Assert.areEqual(1, xml.child('c').childIndex(), "the tag c should be the second tag");
 
@@ -475,16 +475,16 @@ YUI().use('test', function(Y){
 			var child = new XML("<b></b>");
 			var f = new XML("<a><b></b></a>");
 			var result = xml.appendChild(child);
-			Assert.areEqual(xml._children.length, 1);
-			Assert.areEqual(xml._children[0], child);
-			Assert.areEqual(xml, result);
+			Assert.areEqual(1, xml._children.length);
+			Assert.isTrue(xml._children[0] == child);
+			Assert.areSame(xml, result);
 			Assert.areEqual(f.toXMLString(), xml.toXMLString());
 
 			xml = new XML("<a><c></c></a>");
 			child = new XML("<b></b>");
 			f = new XML("<a><c></c><b></b></a>");
 			result = xml.appendChild(child);
-			Assert.areEqual(result, xml);
+			Assert.areEqual(result.toXMLString(), xml.toXMLString());
 			Assert.areEqual(f.toXMLString(), xml.toString());
 		},
 		testPrependChild: function(){
@@ -492,14 +492,14 @@ YUI().use('test', function(Y){
 			var child = new XML("<b></b>");
 			var f = new XML("<a><b></b></a>");
 			var result = xml.prependChild(child);
-			Assert.areEqual(result, xml);
+			Assert.areSame(result, xml);
 			Assert.areEqual(f.toXMLString(), xml.toXMLString());
 
 			xml = new XML("<a><c></c></a>");
 			child = new XML("<b></b>");
 			f = new XML("<a><b></b><c></c></a>");
 			result = xml.prependChild(child);
-			Assert.areEqual(result, xml);
+			Assert.areSame(result, xml);
 			Assert.areEqual(f.toXMLString(), xml.toString());
 		},
 		testNormalize: function(){
@@ -559,12 +559,12 @@ YUI().use('test', function(Y){
 			var f3 = new XML("<a><c></c><d></d><b></b></a>");
 	
 			var result = xml.insertChildBefore(xml.child('c'), child);
-			Assert.areEqual(result, xml);
+			Assert.areSame(result, xml);
 			Assert.areEqual(f1.toXMLString(), result.toXMLString());
 
 			 xml = new XML("<a><c></c><d></d></a>");
 			 result = xml.insertChildBefore(xml.child('d'), child);
-			 Assert.areEqual(result, xml);
+			 Assert.areSame(result, xml);
 			Assert.areEqual(f2.toXMLString(), result.toXMLString());
 
 			xml = new XML("<a><c></c><d></d></a>");
@@ -576,7 +576,7 @@ YUI().use('test', function(Y){
 			xml = new XML("<a><c></c><d></d></a>");
 			child = new XML("<b></b>");
 			result = xml.insertChildBefore(null, child);
-			Assert.areEqual(result, xml);
+			Assert.areSame(result, xml);
 			Assert.areEqual(f3.toXMLString(), result.toXMLString());
 			
 			xml = new XML("<a><c></c><d></d></a>");
@@ -593,12 +593,12 @@ YUI().use('test', function(Y){
 			var f2 = new XML("<a><c></c><d></d><b></b></a>");
 			var f3 = new XML("<a><b></b><c></c><d></d></a>");
 			var result = xml.insertChildAfter(xml.child('c'), child);
-			Assert.areEqual(result, xml);
+			Assert.areSame(result, xml);
 			Assert.areEqual(f1.toXMLString(), result.toXMLString());
 			
 			 xml = new XML("<a><c></c><d></d></a>");
 			 result = xml.insertChildAfter(xml.child('d'), child);
-			 Assert.areEqual(result, xml);
+			 Assert.areSame(result, xml);
 			Assert.areEqual(f2.toXMLString(), result.toXMLString());
 
 			xml = new XML("<a><c></c><d></d></a>");
@@ -611,7 +611,7 @@ YUI().use('test', function(Y){
 			xml = new XML("<a><c></c><d></d></a>");
 			child = new XML("<b></b>");
 			result = xml.insertChildAfter(null, child);
-			Assert.areEqual(result, xml);
+			Assert.areSame(result, xml);
 			Assert.areEqual(f3.toXMLString(), result.toXMLString());
 			
 			xml = new XML("<a><c></c><d></d></a>");
@@ -623,13 +623,13 @@ YUI().use('test', function(Y){
 		testParent: function(){
 			var xml = new XML("<a><b></b></a>");
 			var child = xml.child('b');
-			Assert.areEqual(xml, child.parent());
+			Assert.areEqual(xml.toXMLString(), child.parent().toXMLString());
 
 			xml = new XML("<a><b><c></c></b></a>");
 			var child1 = xml.child('b');
 			var child2 = child1.child('c');
-			Assert.areEqual(child1, child2.parent());
-			Assert.areEqual(xml, child1.parent())
+			Assert.areEqual(child1.toXMLString(), child2.parent().toXMLString());
+			Assert.areEqual(xml.toXMLString(), child1.parent().toXMLString())
 		},
 		testText: function(){
 			var xml = new XML("<a>1<b>2</b>3</a>");
@@ -799,17 +799,7 @@ YUI().use('test', function(Y){
 			Assert.areEqual(xml.toString(), xmlCopy.toString(), 'xmlCopy should has a same toString() value');
 			Assert.areEqual(xml.toXMLString(), xmlCopy.toXMLString(), 'xmlCopy should has a same toXMLString() value');
 		},
-		/**
-		"<xml>sss"
-				+"<a>a"
-					+"<e>e</e>"
-					+"<? instruction ?>"
-				+"</a>"
-				+"<b>b</b>"
-				+"<c att='1'/>"
-				+"<p><![CDATA[inner tag: @#?&<>;'<p></p>]]></p>"
-			 +"</xml>";
-			 */
+
 		testExample: function(){
 			var xml = new XML(example);
 			Assert.areEqual("a", xml.child('a').text().getValue());
@@ -840,7 +830,7 @@ YUI().use('test', function(Y){
 				ignoreComments: false,
 				ignoreProcessingInstructions: false,
 				ignoreWhitespace: false,
-				prettyIndent: 4,
+				prettyIndent: 4
 			});
 			
 			Assert.isFalse(XML.ignoreComments);
@@ -880,8 +870,18 @@ YUI().use('test', function(Y){
 			var xml = new XML("<a>xml</a>");
 			xml.setValue("new Value");
 			Assert.areEqual("new Value", xml.getValue());
+		},
+		testEach: function(){
+			var xml  = new XML("<a>xml</a>");
+			var count = 0;
+			xml.each(function(item, index, host){
+				count++;
+				Assert.areSame(xml, item);
+				Assert.areEqual(xml, host);
+				Assert.areEqual(0, index);
+			});
+			Assert.areEqual(1, count);
 		}
-
 	});
 	
 	//Runner
