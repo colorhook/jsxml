@@ -115,8 +115,9 @@ Date.prototype.pattern=function(fmt) {
 }      
 
 
-YUI().use('node-base', 'io-base', 'substitute', function(Y){
-	var XML = jsxml.XML;
+YUI().use('node-base', 'io-base', 'substitute', 'yql', function(Y){
+	var XML = jsxml.XML,
+		query = 'select * from xml where url="http://api.t.sina.com.cn/trends/statuses.xml?trend_name='+encodeURIComponent("D2前端技术论坛")+'&source=506163941"';
 	var init = function(data){
 		var xml = new XML(data),
 			list = xml.child("status"),
@@ -152,14 +153,13 @@ YUI().use('node-base', 'io-base', 'substitute', function(Y){
 	//entry point
 	Y.one("#load-tweets").on('click', function(){
 		Y.one('#container').setContent("正在搜索...");
-		Y.io("service.php", {
-			on:{ 
-				success:function(id, xhr){
-					init(xhr.responseText);
-				}
-			}
-		});
+		Y.YQL(query, function(r){
+			init(r.results[0]);
+		}, {format:'xml'});
 	});
+	
+	
+	
 });
 </script>
 </body>
