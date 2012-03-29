@@ -3,6 +3,13 @@ jsxml
 
 jsxml is an XML library for javascript (and node)
 
+Install by NPM
+--------------
+
+```shell
+npm install node-jsxml
+```
+
 How to use?
 ------------
 After add this library to your project, there will be a global object named jsxml. 

@@ -1697,5 +1697,7 @@ var jsxml = (function(){
 
 //support for nodejs
 if(typeof exports != "undefined"){
-	exports.jsxml = jsxml;
+	for(var i in jsxml){
+		exports[i] = jsxml[i];
+	}
 }

@@ -1,0 +1,33 @@
+{
+    "name": "node-jsxml",
+    "version": "0.2.0",
+	"description": "an XML parser for javascript and node.js",
+    "keywords": ["xml", "parser"],
+    "main": "./src/jsxml.js",
+    "engines": {
+        "node" : ">=0.1.9"
+    },
+	"author": "colorhook <colorhook@gmail.com>",
+	"maintainers": [{
+      "name": "colorhook",
+      "email": "colorhook@gmail.com",
+      "url": "http://colorhook.com"
+    }],
+	"bugs": {
+        "email": "colorhook@gmail.com",
+        "url": "http://github.com/colorhook/jsxml/issues"
+    },
+    "dependencies": {
+    },
+    "homepage": "https://github.com/colorhook/jsxml",
+    "repository" : {
+        "type" : "git",
+        "url" : "git://github.com/colorhook/jsxml.git"
+    },
+	"licenses": [
+        {
+            "type": "MIT",
+            "url": "http://github.com/colorhook/jsxml/blob/master/LICENSE"
+        }
+    ]
+}

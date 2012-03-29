@@ -1,6 +1,6 @@
 if(typeof exports != "undefined"){
 	var YUI = require("yui3").YUI;
-	var jsxml = require("../src/jsxml.js").jsxml;
+	var jsxml = require("../src/jsxml.js");
 }
 YUI().use('test', function(Y){
 

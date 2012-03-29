@@ -1,0 +1,9 @@
+.*
+node_modules/
+ant/
+build/
+lib/
+jsTestDriver-yui-adapter/
+examples/
+tests/
+JsTestDriver.conf
