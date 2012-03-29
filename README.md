@@ -6,13 +6,16 @@ jsxml is an XML library for javascript (and node)
 How to use?
 ------------
 After add this library to your project, there will be a global object named jsxml. 
+
 ```javascript
 var Namespace = jsxml.Namespace,
     QName = jsxml.QName,
     XML = jsxml.XML,
     XMLList = jsxml.XMLList;
 ```
+
 Here you go:
+
 ```javascript
 var xml = new XML("your xml string");
 
@@ -44,6 +47,7 @@ var attributes = xml.attributes();
 ```
 
 All methods above return an XML object or XMLList object, if you want to get the String type content, you should:
+
 ```javascript
 var xml = new XML("your xml string");
 
@@ -57,6 +61,7 @@ var childA = xml.child('a').getValue();
 ```
 
 If you want to modify the value, you should call method setValue:
+
 ```javascript
 var xml = new XML("your xml string");
 
@@ -68,11 +73,13 @@ childA.setValue("newValue");
 ```
 
 You can regenerate the XML
+
 ```javascript
 var str = xml.toXMLString();
 ```
 
 While dealing with a list of childs in XML tree, you should use XMLList API:
+
 ```javascript
 var list = xml.child("item");
 list.each(function(item, index){
@@ -84,6 +91,7 @@ Advanced topics
 ----------------
 
 You can also add, retrieve or remove namespaces:
+
 ```javascript
 var xml = new XML("your xml string");
 var ns = xml.namespace("prefix");
