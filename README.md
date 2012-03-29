@@ -14,6 +14,15 @@ How to use?
 ------------
 After add this library to your project, there will be a global object named jsxml. 
 
+in HTML file, import using <script> elements.
+
+```html
+<script src="jsxml.js"></script>
+```
+
+in Node, import using require function.
+var jsxml = require("node-jsxml");
+
 ```javascript
 var Namespace = jsxml.Namespace,
     QName = jsxml.QName,
