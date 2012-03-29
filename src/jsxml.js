@@ -1,12 +1,12 @@
 /*!
  * Copyright 2011 http://colorhook.com.
  * @author: <a href="colorhook@gmail.com">colorhook</a>
- * @version:0.1.0
+ * @version:0.2.0
  */
 /**
  * @preserve Copyright 2011 http://colorhook.com.
  * @author: <a href="colorhook@gmail.com">colorhook</a>
- * @version:0.1.0
+ * @version:0.2.0
  */
 var jsxml = (function(){
 	
@@ -126,7 +126,6 @@ var jsxml = (function(){
 		stack.last = function(){
 			return this[ this.length - 1 ];
 		};
-
 		while (xml) {
 			chars = true;
 			
@@ -166,9 +165,23 @@ var jsxml = (function(){
 					xml = xml.substring( index + 3 );
 					chars = false;
 				}
-
+			}
+			//doctype
+			else if (xml.indexOf("<!") == 0){
+				var m = xml.match(/<!DOCTYPE[^<>]*(<![^<>]*>)*[^<>]*>/i);
+				if(m && m[0]){
+					var doctype = m[0];
+					index = doctype.length;
+					text = xml.substr(2, index-3);
+					if(handler.doctype){
+						handler.doctype(text);
+					}
+					xml = xml.substring( index);
+					chars = false;
+				}
+			}
 			// end tag
-			} else if ( xml.indexOf("</") == 0 ) {
+			else if ( xml.indexOf("</") == 0 ) {
 				match = xml.match( endTag );
 
 				if ( match ) {
@@ -385,6 +398,7 @@ var jsxml = (function(){
 	 * @static
 	 */
 	 NodeKind = {
+		 'DOCTYPE': 'doctype',
 		 'ELEMENT': 'element',
 		 'COMMENT': 'comment',
 		 'PROCESSING_INSTRUCTIONS': 'processing-instructions',
@@ -660,85 +674,97 @@ var jsxml = (function(){
 		 this._children =  [];
 		 this._attributes =  [];
 		 this._namespaces = [];
+		 this._doctypes = [];
 		 this._nodeKind =  NodeKind.ELEMENT;
 		 this._qname = null;
 		 this._parent = null;
 		 this._text = null;
 		 this._useCDATA = false;
 
-		 var current, self= this;
-		 if(str){
-			 _parseXML(str, {
-				 start: function(tag, attrs, unary ){
-					  var xml;
-					 if(!current){
-						 xml = self;
-					 }else{
-						 xml = new XML();
-						 xml._parent = current;
-					 }
-					 xml._qname = QName._format(tag);
-					 for(var i in attrs){
-						var attr = new XML();
-						attr._nodeKind = NodeKind.ATTRIBUTE;
-						var _qname;
-						if(attrs[i].name === 'xmlns'){
-							_qname = new QName(new Namespace('xmlns', attrs[i].value), '');
-						}else{
-						  _qname = QName._format(attrs[i].name, attrs[i].value);
-						}
-						var prefix = _qname._ns.prefix || "";
-						
-						if(prefix === 'xmlns'){
-							var ns = new Namespace(_qname.localName, _qname.uri);
-							xml.addNamespace(ns);
-							if(_qname.localName == xml._qname._ns.prefix){
-								xml.setNamespace(ns);
-							}
-						}else{
-							attr._qname = _qname;
-							attr._text = attrs[i].value;
-							xml._attributes.push(attr);
-						}
-					 }
-					 current = xml;
-					 if(unary){
-						this.end(tag);
-					 }
-				 },
-				 chars: function(text, useCDATA){
-					 text = trim(text);
-					 if(text == "" && XML.ignoreWhitespace){
-						return;
-					 }
-					 var el = new XML();
-					 el._nodeKind = NodeKind.TEXT;
-					 el._text = text;
-					 el._useCDATA = useCDATA;
-					 current._children.push(el);
-				 },
-				 end: function(tag){
-					 if(current && current._parent){
-						current._parent._children.push(current);
-						current = current._parent;
-					 }else if(current == self){
-						current = null;
-					 }
-				 },
-				 comment: function(value){
-					 var el = new XML();
-					 el._nodeKind = NodeKind.COMMENT;
-					 el._text = value;
-					current && current._children.push(el);
-				 },
-				 instruction: function(value){
-					 var el = new XML();
-					 el._nodeKind = NodeKind.PROCESSING_INSTRUCTIONS;
-					 el._text = value;
-					current && current._children.push(el);
+		 var current, 
+			 self= this;
+
+		_parseXML(str, {
+			 start: function(tag, attrs, unary ){
+				 var xml;
+				 if(!current){
+					 xml = self;
+				 }else{
+					 xml = new XML();
+					 xml._parent = current;
 				 }
-			 });
-		 }
+				 xml._qname = QName._format(tag);
+				 for(var i in attrs){
+					var attr = new XML();
+					attr._nodeKind = NodeKind.ATTRIBUTE;
+					var _qname;
+					if(attrs[i].name === 'xmlns'){
+						_qname = new QName(new Namespace('xmlns', attrs[i].value), '');
+					}else{
+					  _qname = QName._format(attrs[i].name, attrs[i].value);
+					}
+					var prefix = _qname._ns.prefix || "";
+					
+					if(prefix === 'xmlns'){
+						var ns = new Namespace(_qname.localName, _qname.uri);
+						xml.addNamespace(ns);
+						if(_qname.localName == xml._qname._ns.prefix){
+							xml.setNamespace(ns);
+						}
+					}else{
+						attr._qname = _qname;
+						attr._text = attrs[i].value;
+						xml._attributes.push(attr);
+					}
+				 }
+				 current = xml;
+				 if(unary){
+					this.end(tag);
+				 }
+			 },
+			 chars: function(text, useCDATA){
+				 text = trim(text);
+				 if(text == "" && XML.ignoreWhitespace){
+					return;
+				 }
+				 var el = new XML();
+				 el._nodeKind = NodeKind.TEXT;
+				 el._text = text;
+				 el._useCDATA = useCDATA;
+				 current._children.push(el);
+			 },
+			 end: function(tag){
+				 if(current && current._parent){
+					current._parent._children.push(current);
+					current = current._parent;
+				 }else if(current == self){
+					current = null;
+				 }
+			 },
+			 comment: function(value){
+				 var el = new XML();
+				 el._nodeKind = NodeKind.COMMENT;
+				 el._text = value;
+				 current && current._children.push(el);
+			 },
+			 instruction: function(value){
+				 var el = new XML();
+				 el._nodeKind = NodeKind.PROCESSING_INSTRUCTIONS;
+				 el._text = value;
+				 current && current._children.push(el);
+			 },
+			 doctype: function(value){
+				var el = new XML();
+				el._nodeKind = NodeKind.DOCTYPE;
+				el._text = value;
+				if(current){
+					current._children.push(el);
+				}else{
+					self._doctypes.push(el);
+				}
+			 }
+		 });
+	 
 	}
 
 	merge(XML.prototype, {
@@ -1420,6 +1446,10 @@ var jsxml = (function(){
 					s +=" ";
 				}
 			}
+			for(i = 0, l = this._doctypes.length; i < l; i++){
+				s += this._doctypes[i]._toXMLString(indent) + "\n";
+			}
+			
 			if(nk == NodeKind.ATTRIBUTE){
 				return s + this._text;
 			}else if(nk == NodeKind.TEXT){
@@ -1432,8 +1462,13 @@ var jsxml = (function(){
 				return s + "<!--"+this._text +"-->";
 			}else if(nk == NodeKind.PROCESSING_INSTRUCTIONS){
 				return s + "<?" + this._text + "?>";
+			}else if(nk == NodeKind.DOCTYPE){
+				return s + "<!" + this._text + ">";
 			}
-
+			
+			if(!this._qname){
+				return "";
+			}
 			if(this._qname._ns.prefix){
 				tag = this._qname._ns.prefix+":" +this.localName();
 			}else{
@@ -1463,14 +1498,18 @@ var jsxml = (function(){
 			}
 			p = [];
 			for(i = 0, l = children.length; i < l; i++){
-				var el = children[i];
-				if(el.nodeKind() == NodeKind.ELEMENT){
+				var el = children[i],
+					enk = el.nodeKind();
+
+				if(enk == NodeKind.ELEMENT){
 					p.push(el);
-				}else if(el.nodeKind() == NodeKind.COMMENT && !XML.ignoreComments){
+				}else if(enk == NodeKind.COMMENT && !XML.ignoreComments){
 					p.push(el);
-				}else if(el.nodeKind() == NodeKind.PROCESSING_INSTRUCTIONS && !XML.ignoreProcessingInstructions){
+				}else if(enk == NodeKind.PROCESSING_INSTRUCTIONS && !XML.ignoreProcessingInstructions){
 					p.push(el);
-				}else if(el.nodeKind() == NodeKind.TEXT){
+				}else if(enk == NodeKind.TEXT){
+					p.push(el);
+				}else if(enk == NodeKind.DOCTYPE){
 					p.push(el);
 				}
 			}
@@ -1655,3 +1694,8 @@ var jsxml = (function(){
 		XML: XML
 	}
 })();
+
+//support for nodejs
+if(typeof exports != "undefined"){
+	exports.jsxml = jsxml;
+}

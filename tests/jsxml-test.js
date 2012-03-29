@@ -1,3 +1,7 @@
+if(typeof exports != "undefined"){
+	var YUI = require("yui3").YUI;
+	var jsxml = require("../src/jsxml.js").jsxml;
+}
 YUI().use('test', function(Y){
 
 
@@ -300,9 +304,30 @@ YUI().use('test', function(Y){
 			Assert.areEqual('<b>1</b>', arr1[0].toXMLString());
 			Assert.areEqual('<b>2</b>', arr1[1].toXMLString());
 
+		},
+		testDoctype: function(){
+			var str = "<!doctype abc>\n<a/>";
+			var xml = new XML(str);
+			Assert.areEqual(str, xml.toXMLString());
+		},
+		testDoctype2: function(){
+			var str = '<?xml version="1.0" encoding="utf-8" ?>' +
+					'<!DOCTYPE element[' +
+					'<!ELEMENT element_name element_definition>' +
+					'<!ELEMENT element_name element_definition>' +
+					']>' +
+				    '<xml>xml content</xml>';
+			var passed = true;
+			try{
+				new XML(str);
+			}catch(err){
+				passed = false;
+			}
+			Assert.isTrue(passed);
 		}
 		
 	});
+	var xml = new XML();
 	//XML TestCase
 	var xmlTestCase = new Y.Test.Case({
 
@@ -318,6 +343,8 @@ YUI().use('test', function(Y){
 			Assert.isArray(xml._children);
 			Assert.isNull(xml._parent);
 			Assert.areEqual(NodeKind.ELEMENT, xml._nodeKind);
+			Assert.areEqual(xml.toString(), "");
+			Assert.areEqual(xml.toXMLString(), "");
 		},
 		testNodeKind: function(){
 			var list = new XML();
@@ -336,9 +363,14 @@ YUI().use('test', function(Y){
 		},
 		testName: function(){
 			var xml = new XML();
-			Assert.areEqual(xml.name(), null);
-			Assert.areEqual(xml.localName(), null);
+
+			Assert.areEqual(null, xml.name());
+			Assert.areEqual(null, xml.localName());
 			
+			xml.setName("hello");
+			Assert.areEqual(null, xml.name());
+			Assert.areEqual(null, xml.localName());
+
 			var ns = new Namespace("prefix", "http://uri");
 			var qname = new QName(ns, "localName");
 			xml._qname = qname;
