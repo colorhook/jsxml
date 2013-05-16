@@ -1,25 +1,25 @@
 /*!
  * Copyright 2011 http://colorhook.com.
  * @author: <a href="colorhook@gmail.com">colorhook</a>
- * @version:0.2.0
+ * @version:0.3.0
  */
 /**
  * @preserve Copyright 2011 http://colorhook.com.
  * @author: <a href="colorhook@gmail.com">colorhook</a>
- * @version:0.2.0
+ * @version:0.3.0
  */
 var jsxml = (function(){
 	
-    /**
-	 * XML parser comes from HTML Parser by John Resig (ejohn.org)
-	 * http://ejohn.org/files/htmlparser.js
-     * Original code by Erik Arvidsson, Mozilla Public License
-     * http://erik.eae.net/simplehtmlparser/simplehtmlparser.js
-     */
+  /**
+   * XML parser comes from HTML Parser by John Resig (ejohn.org)
+   * http://ejohn.org/files/htmlparser.js
+   * Original code by Erik Arvidsson, Mozilla Public License
+   * http://erik.eae.net/simplehtmlparser/simplehtmlparser.js
+   */
 	// Regular Expressions for parsing tags and attributes
 	var startTag = /^<([a-zA-Z\$_]+:{0,1}[a-zA-Z0-9\$\-_]*)((?:\s+[a-zA-Z\$_]+:{0,1}[a-zA-Z0-9\$\-_]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/,
-		endTag = /^<\/([a-zA-Z0-9\$\-_:]+)[^>]*>/,
-		attr = /([a-zA-Z\$_]+:{0,1}[a-zA-Z0-9\$\-_]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g,
+	  endTag = /^<\/([a-zA-Z0-9\$\-_:]+)[^>]*>/,
+    attr = /([a-zA-Z\$_]+:{0,1}[a-zA-Z0-9\$\-_]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g,
 		_parseXML,
 		trim,
 		merge,
@@ -42,7 +42,7 @@ var jsxml = (function(){
 			return s && s.trim ? s.trim() : s;
 		}: function(s){
 			try{
-				return s.replace(/^\s+|\s+$/, '');
+				return s.replace(/^\s+|\s+$/g, '');
 			}catch(err){
 				return s;
 			}
@@ -140,10 +140,12 @@ var jsxml = (function(){
 							handler.chars( text, true );
 				
 					xml = xml.substring( index + 3 );
+				}else{
+					throw new Error('[XML Parse Error] the CDATA end tag not found: ' + xml);
 				}
 				chars = false;
 			}
-			//instruction
+			//Instruction
 			else if(xml.indexOf("<?") == 0){
 				index = xml.indexOf("?>");
 				if(index > 0){
@@ -152,6 +154,8 @@ var jsxml = (function(){
 						handler.instruction(text);
 					}
 					xml = xml.substring( index + 2 );
+				}else{
+					throw new Error('[XML Parse Error] the Instruction end tag not found: ' + xml);
 				}
 				chars = false;
 			}
@@ -164,6 +168,8 @@ var jsxml = (function(){
 						handler.comment( xml.substring( 4, index ) );
 					xml = xml.substring( index + 3 );
 					chars = false;
+				}else{
+					throw new Error('[XML Parse Error] the Comment end tag not found: ' + xml);
 				}
 			}
 			//doctype
@@ -188,6 +194,8 @@ var jsxml = (function(){
 					xml = xml.substring( match[0].length );
 					match[0].replace( endTag, parseEndTag );
 					chars = false;
+				}else{
+					throw new Error('[XML Parse Error] the end tag is invalid: ' + xml);
 				}
 
 			// start tag
@@ -197,6 +205,8 @@ var jsxml = (function(){
 					xml = xml.substring( match[0].length );
 					match[0].replace( startTag, parseStartTag );
 					chars = false;
+				}else{
+					throw new Error('[XML Parse Error] the start tag is invalid: ' + xml);
 				}
 			}
 
@@ -212,12 +222,14 @@ var jsxml = (function(){
 
 	
 			if ( xml == last )
-				throw "Parse Error: " + xml;
+				throw new Error("[XML Parse Error] " + xml)
 			last = xml;
 		}
 		
-		// Clean up any remaining tags
-		parseEndTag();
+		// Check the tag closed
+		if(stack.length){
+			throw new Error("[XML Parse Error] There is tag not closed " + stack.last());
+		}
 
 		function parseStartTag(tag, tagName, rest, unary ) {
 			
@@ -232,8 +244,7 @@ var jsxml = (function(){
 				rest.replace(attr, function(match, name) {
 					var value = arguments[2] ? arguments[2] :
 						arguments[3] ? arguments[3] :
-						arguments[4] ? arguments[4] :
-						name ? name : "";
+						arguments[4] ? arguments[4] : "";
 					
 					attrs.push({
 						name: name,
@@ -248,6 +259,22 @@ var jsxml = (function(){
 		}
 
 		function parseEndTag( tag, tagName ) {
+			if(!tagName){
+				stack.length = 0;
+				return;
+			}
+			if(!stack.length){
+				throw new Error("[XML Parse Error] Cannot find the start tag for the end tag " + tagName);
+			}
+			var startTag = stack.last();
+			if(startTag != tagName){
+				throw new Error("[XML Parse Error] End tag " + tagName + " is not match the start tag " + startTag);
+			}
+			stack.length = stack.length -1;
+			if ( handler.end ){
+				handler.end(startTag);
+			}
+			return;
 			// If no tag name is provided, clean shop
 			if ( !tagName )
 				var pos = 0;
@@ -670,7 +697,7 @@ var jsxml = (function(){
 	 * @description XML class
 	 * @param str{String}
 	 */
-	XML = function(str){
+	XML = function(str, debug){
 		 this._children =  [];
 		 this._attributes =  [];
 		 this._namespaces = [];

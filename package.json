@@ -19,6 +19,12 @@
     },
     "dependencies": {
     },
+    "devDependencies": {
+
+    },
+    "scripts":{
+        "test": "node tests/jsxml-test.js"
+    },
     "homepage": "https://github.com/colorhook/jsxml",
     "repository" : {
         "type" : "git",

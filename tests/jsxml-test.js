@@ -361,6 +361,31 @@ YUI().use('test', function(Y){
 			var xml = new XML();
 			Assert.areEqual(xml.length(), 1);
 		},
+
+		testParseError: function(){
+			var xml, error = false;
+
+			var cases = [
+				"<a><a>",
+				"<a></b>",
+				"<a></a></a>",
+				"<a><a/>",
+				"<a><b/><a>",
+				"<a>a<a>",
+				"<?a></a>",
+				"<!--a >"
+			]
+			for(var i = 0, l = cases.length; i < l;i++){
+				try{
+					xml = new XML(cases[i], true)
+				}catch(err){
+					console.log(err)
+					error = true;
+				}
+				Assert.areEqual(error, true);
+				error = false;
+			}
+		},
 		testName: function(){
 			var xml = new XML();
 

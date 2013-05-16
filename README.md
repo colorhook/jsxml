@@ -3,6 +3,11 @@ jsxml
 
 jsxml is an XML library for javascript (and node)
 
+单元测试
+------
+[![travis build status](https://api.travis-ci.org/colorhook/jsxml.png)](https://www.travis-ci.org/colorhook/jsxml)
+
+
 Install by NPM
 --------------
 
@@ -36,13 +41,29 @@ var Namespace = jsxml.Namespace,
 Here you go:
 
 ```javascript
-var xml = new XML("your xml string");
+var xml = new XML("<spring>" + 
+		     "<list id='data'>" + 
+		       "<element value='jsxml'/>" +
+		       "<element value='is'/>" +
+		       "<element value='an'/>" +
+		       "<element value='xml'/>" +
+		       "<element value='parser'/>" +
+		     "</list>" +
+                  "</spring>");
 
 //find child nodes
-var child = xml.child('childTag');
+var child = xml.child('list');
+
+//print the xml string
+console.log(xml.toXMLString());
+
+//modify namespace
+xml.addNamespace(new Namespace("ns", "http://colorhook.com"));
+xml.children().addNamespace(new Namespace("prefix", "uri"));
+console.log(xml.toXMLString());
 
 //find descendants nodes
-var descendants = xml.descendants('descendantTag');
+var descendants = xml.descendants('element');
 
 //get all children
 var children = xml.children();
@@ -59,7 +80,7 @@ var elements = xml.elements();
 var comments = xml.comments();
 
 //get attribute
-var attribute = xml.attribute("attributeName");
+var attribute = xml.attribute("id");
 
 //get all attributes
 var attributes = xml.attributes();
@@ -68,7 +89,7 @@ var attributes = xml.attributes();
 All methods above return an XML object or XMLList object, if you want to get the String type content, you should:
 
 ```javascript
-var xml = new XML("your xml string");
+var xml = new XML(xmlContent);
 
 var attrValue = xml.attribute('attrName').toString();
 //or
