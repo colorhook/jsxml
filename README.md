@@ -5,7 +5,7 @@ jsxml is an XML library for javascript (and node)
 
 单元测试
 ------
-[![travis build status](https://api.travis-ci.org/colorhook/jsxml.png)](https://www.travis-ci.org/colorhook/jsxml)
+
 
 
 Install by NPM

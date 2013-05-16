@@ -1,6 +1,6 @@
 {
     "name": "node-jsxml",
-    "version": "0.2.0",
+    "version": "0.3.0",
 	"description": "an XML parser for javascript and node.js",
     "keywords": ["xml", "parser"],
     "main": "./src/jsxml.js",
@@ -20,7 +20,7 @@
     "dependencies": {
     },
     "devDependencies": {
-        "yui3": "~0.5"
+        "yui3": ""
     },
     "scripts":{
         "test": "node tests/jsxml-test.js"
