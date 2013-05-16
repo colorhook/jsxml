@@ -20,7 +20,7 @@
     "dependencies": {
     },
     "devDependencies": {
-
+        "yui3": "~"
     },
     "scripts":{
         "test": "node tests/jsxml-test.js"
