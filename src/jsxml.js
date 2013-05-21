@@ -8,7 +8,8 @@
  * @author: <a href="colorhook@gmail.com">colorhook</a>
  * @version:0.3.0
  */
-var jsxml = (function(){
+
+(function(){
 	
   /**
    * XML parser comes from HTML Parser by John Resig (ejohn.org)
@@ -1709,7 +1710,7 @@ var jsxml = (function(){
 	 * @description return global object jsxml
 	 * @return Object
 	 */
-	return {
+	var jsxml = {
 		containsEntity: containsEntity,
 		replaceToEntity: replaceToEntity,
 		replaceFromEntity: replaceFromEntity,
@@ -1719,12 +1720,19 @@ var jsxml = (function(){
 		NodeKind: NodeKind,
 		XMLList: XMLList,
 		XML: XML
-	}
-})();
+	};
 
-//support for nodejs
-if(typeof exports != "undefined"){
-	for(var i in jsxml){
-		exports[i] = jsxml[i];
+	//support for nodejs
+	if(typeof exports != "undefined"){
+		for(var i in jsxml){
+			exports[i] = jsxml[i];
+		}
+	} else if (typeof define === 'function' && define.amd) {
+	    // Publish as AMD module
+	    define(function() { return jsxml; });
+	} else {
+		// Publish as global (in browsers)
+		this.jsxml = jsxml;
 	}
-}
+
+}).call(this);
