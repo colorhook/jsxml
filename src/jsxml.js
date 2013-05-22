@@ -1727,7 +1727,7 @@
 		for(var i in jsxml){
 			exports[i] = jsxml[i];
 		}
-	} else if (typeof define === 'function' && define.amd) {
+	} else if (typeof define === 'function') {
 	    // Publish as AMD module
 	    define(function() { return jsxml; });
 	} else {

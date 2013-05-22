@@ -31,6 +31,19 @@ in Node, import using require function.
 var jsxml = require("node-jsxml");
 ```
 
+support AMD, CMD. Big thanks to [TimSchlechter](https://github.com/TimSchlechter) as a contributor.
+
+```javascript
+seajs.config({
+    alias: {
+        jsxml: '../src/jsxml.js'
+    }
+});
+seajs.use('jsxml', function(jsxml){
+    console.log(jsxml);
+});
+```
+
 ```javascript
 var Namespace = jsxml.Namespace,
     QName = jsxml.QName,

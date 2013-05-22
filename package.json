@@ -1,6 +1,6 @@
 {
     "name": "node-jsxml",
-    "version": "0.3.0",
+    "version": "0.4.0",
 	"description": "an XML parser for javascript and node.js",
     "keywords": ["xml", "parser"],
     "main": "./src/jsxml.js",
@@ -12,6 +12,10 @@
       "name": "colorhook",
       "email": "colorhook@gmail.com",
       "url": "http://colorhook.com"
+    }],
+    "contributors": [{
+      "name": "TimSchlechter",
+      "url": "http://github.com/TimSchlechter"
     }],
 	"bugs": {
         "email": "colorhook@gmail.com",
