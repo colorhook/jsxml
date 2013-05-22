@@ -31,7 +31,7 @@ in Node, import using require function.
 var jsxml = require("node-jsxml");
 ```
 
-support AMD, CMD. Big thanks to [TimSchlechter](https://github.com/TimSchlechter) as a contributor.
+support AMD, CMD. Big thanks to [TimSchlechter](https://github.com/TimSchlechter).
 
 ```javascript
 seajs.config({
