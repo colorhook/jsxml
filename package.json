@@ -1,43 +1,53 @@
 {
-    "name": "node-jsxml",
-    "version": "0.4.0",
-	"description": "an XML parser for javascript and node.js",
-    "keywords": ["xml", "parser"],
-    "main": "./src/jsxml.js",
-    "engines": {
-        "node" : ">=0.1.9"
-    },
-	"author": "colorhook <colorhook@gmail.com>",
-	"maintainers": [{
+  "name": "node-jsxml",
+  "version": "0.5.0",
+  "description": "an XML parser for javascript and node.js",
+  "keywords": [
+    "xml",
+    "parser"
+  ],
+  "main": "./src/jsxml.js",
+  "engines": {
+    "node": ">=0.1.9"
+  },
+  "author": "colorhook <colorhook@gmail.com>",
+  "maintainers": [
+    {
       "name": "colorhook",
       "email": "colorhook@gmail.com",
       "url": "http://colorhook.com"
-    }],
-    "contributors": [{
+    }
+  ],
+  "contributors": [
+    {
       "name": "TimSchlechter",
       "url": "http://github.com/TimSchlechter"
-    }],
-	"bugs": {
-        "email": "colorhook@gmail.com",
-        "url": "http://github.com/colorhook/jsxml/issues"
     },
-    "dependencies": {
-    },
-    "devDependencies": {
-        "yui3": ""
-    },
-    "scripts":{
-        "test": "node tests/jsxml-test.js"
-    },
-    "homepage": "https://github.com/colorhook/jsxml",
-    "repository" : {
-        "type" : "git",
-        "url" : "git://github.com/colorhook/jsxml.git"
-    },
-	"licenses": [
-        {
-            "type": "MIT",
-            "url": "http://github.com/colorhook/jsxml/blob/master/LICENSE"
-        }
-    ]
+    {
+      "name": "baconmania",
+      "url": "http://github.com/baconmania"
+    }
+  ],
+  "bugs": {
+    "email": "colorhook@gmail.com",
+    "url": "http://github.com/colorhook/jsxml/issues"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "yui3": ""
+  },
+  "scripts": {
+    "test": "node tests/jsxml-test.js"
+  },
+  "homepage": "https://github.com/colorhook/jsxml",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/colorhook/jsxml.git"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/colorhook/jsxml/blob/master/LICENSE"
+    }
+  ]
 }
