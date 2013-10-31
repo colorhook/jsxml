@@ -148,7 +148,7 @@
         chars = false;
       } else if (xml.indexOf("<?") == 0) {
 
-        //Instruction  
+        //Instruction
         index = xml.indexOf("?>");
         if (index > 0) {
           text = xml.substr(2, index - 2);
@@ -162,7 +162,7 @@
         chars = false;
       } else if (xml.indexOf("<!--") == 0) {
 
-        // Comment 
+        // Comment
         index = xml.indexOf("-->");
 
         if (index >= 0) {
@@ -175,7 +175,7 @@
         }
       } else if (xml.indexOf("<!") == 0) {
 
-        //doctype 
+        //doctype
         var m = xml.match(/<!DOCTYPE[^<>]*(<![^<>]*>)*[^<>]*>/i);
         if (m && m[0]) {
           var doctype = m[0];
@@ -189,7 +189,7 @@
         }
       } else if (xml.indexOf("</") == 0) {
 
-        // end tag  
+        // end tag
         match = xml.match(endTag);
 
         if (match) {
@@ -986,7 +986,7 @@
       return this.attribute('*');
     },
     /**
-     * @description create a text type XML node by the text parameter, 
+     * @description create a text type XML node by the text parameter,
      *  if the text contains special characters, use CDATA tag.
      * @access private
      * @param text{String}
@@ -1475,7 +1475,7 @@
 
       if (prettyPrinting) {
         for (i = 0; i < indent; i++) {
-          s += " ";
+          s += XML.prettyTab?"\t":" ";
         }
       }
       for (i = 0, l = this._doctypes.length; i < l; i++) {
@@ -1563,12 +1563,12 @@
           if (prettyPrinting) {
             s += "\n";
           }
-          s += p[i]._toXMLString(indent + XML.prettyIndent);
+          s += p[i]._toXMLString(indent + (XML.prettyTab?1:XML.prettyIndent));
         }
         if (prettyPrinting) {
           s += "\n";
           for (i = 0; i < indent; i++) {
-            s += " ";
+            s += XML.prettyTab?"\t":" ";
           }
         }
         s += "</" + tag + ">";
@@ -1681,6 +1681,7 @@
     ignoreWhitespace: true,
     prettyIndent: 2,
     prettyPrinting: true,
+	prettyTab: false,
 
     /**
      * @description get an object copy indicating the XML setting.
@@ -1692,7 +1693,8 @@
         ignoreProcessingInstructions: this.ignoreProcessingInstructions,
         ignoreWhitespace: this.ignoreWhitespace,
         prettyIndent: this.prettyIndent,
-        prettyPrinting: this.prettyPrinting
+        prettyPrinting: this.prettyPrinting,
+        prettyTab: this.prettyTab
       }
     },
     /**
@@ -1714,6 +1716,7 @@
       assign("ignoreWhitespace");
       assign("prettyIndent");
       assign("prettyPrinting");
+      assign("prettyTab");
     }
   });
 
