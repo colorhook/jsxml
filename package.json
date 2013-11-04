@@ -1,6 +1,6 @@
 {
   "name": "node-jsxml",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "an XML parser for javascript and node.js",
   "keywords": [
     "xml",
@@ -26,6 +26,10 @@
     {
       "name": "baconmania",
       "url": "http://github.com/baconmania"
+    },
+    {
+      "name": "Ron Valstar",
+      "url": "http://github.com/Sjeiti"
     }
   ],
   "bugs": {
