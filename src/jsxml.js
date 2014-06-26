@@ -718,7 +718,12 @@
       start: function(tag, attrs, unary) {
         var xml;
         if (!current) {
-          xml = self;
+          if (XML.createMainDocument) {          
+              xml = new XML();
+              xml._parent = self;
+          } else {
+            xml = self;
+          }
         } else {
           xml = new XML();
           xml._parent = current;
@@ -1559,7 +1564,8 @@
         }
       }
       if (p.length == 0) {
-        s += "/>";
+        if (s.length>0) 
+            s += "/>";
       } else if (p.length == 1 && p[0].nodeKind() == NodeKind.TEXT) {
         s += ">";
         s += p[0]._toXMLString(0);

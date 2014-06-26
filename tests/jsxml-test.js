@@ -1,5 +1,5 @@
 if(typeof exports != "undefined"){
-	var YUI = require("yui3").YUI;
+	var YUI = require("yui").YUI;
 	var jsxml = require("../src/jsxml.js");
 }
 YUI().use('test', function(Y){
@@ -343,8 +343,8 @@ YUI().use('test', function(Y){
 			Assert.isArray(xml._children);
 			Assert.isNull(xml._parent);
 			Assert.areEqual(NodeKind.ELEMENT, xml._nodeKind);
-			Assert.areEqual(xml.toString(), "");
-			Assert.areEqual(xml.toXMLString(), "");
+			Assert.areEqual("",xml.toString());
+			Assert.areEqual("",xml.toXMLString());
 		},
 		testNodeKind: function(){
 			var list = new XML();
@@ -938,6 +938,30 @@ YUI().use('test', function(Y){
 				Assert.areEqual(0, index);
 			});
 			Assert.areEqual(1, count);
+		},
+        testCreateMainDocumentAndExport: function(){
+            jsxml.XML.setSettings({ignoreComments : false, ignoreProcessingInstructions : false, createMainDocument: true});
+			var xml = new XML("<a>xml</a>\n");
+			xml.child('a').setValue("new Value");
+			Assert.areEqual("new Value", xml.child('a').getValue());
+            Assert.areEqual("<a>new Value</a>\n", xml.toXMLString());
+            
+            xml = new XML("<b><a>xml</a></b>\n");
+			xml.child('b').child('a').setValue("new Value");
+			Assert.areEqual("new Value", xml.child('b').child('a').getValue());
+            Assert.areEqual("<b>\n  <a>new Value</a>\n</b>\n", xml.toXMLString());
+            
+            xml = new XML("<!-- cmt1 --><!-- cmt2 --><b><a>xml</a></b>\n");
+			xml.child('b').child('a').setValue("new Value");
+			Assert.areEqual("new Value", xml.child('b').child('a').getValue());
+            Assert.areEqual("<!-- cmt1 -->\n<!-- cmt2 -->\n<b>\n  <a>new Value</a>\n</b>\n", xml.toXMLString());
+            
+            xml = new XML("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!-- cmt1 --><!-- cmt2 --><b><a>xml</a></b>\n");
+			xml.child('b').child('a').setValue("new Value");
+			Assert.areEqual("new Value", xml.child('b').child('a').getValue());
+            Assert.areEqual("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<!-- cmt1 -->\n<!-- cmt2 -->\n<b>\n  <a>new Value</a>\n</b>\n", xml.toXMLString());
+            
+            jsxml.XML.setSettings({ignoreComments : true, ignoreProcessingInstructions : true, createMainDocument: false});
 		}
 	});
 	
