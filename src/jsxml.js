@@ -18,8 +18,8 @@
    * http://erik.eae.net/simplehtmlparser/simplehtmlparser.js
    */
   // Regular Expressions for parsing tags and attributes
-  var startTag = /^<([0-9a-zA-Z\$_]+:{0,1}[a-zA-Z0-9\$\-_]*)((?:\s+[a-zA-Z\$_]+:{0,1}[a-zA-Z0-9\$\-_]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/,
-    endTag = /^<\/([a-zA-Z0-9\$\-_:]+)[^>]*>/,
+  var startTag = /^<([0-9a-zA-Z\$_\.]+:{0,1}[a-zA-Z0-9\$\-_]*)((?:\s+[a-zA-Z\$_]+:{0,1}[a-zA-Z0-9\$\-_]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/,
+    endTag = /^<\/([a-zA-Z0-9\$\-_\.:]+)[^>]*>/,
     attr = /([a-zA-Z\$_]+:{0,1}[a-zA-Z0-9\$\-_]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g,
     _parseXML,
     trim,
@@ -208,7 +208,7 @@
           match[0].replace(startTag, parseStartTag);
           chars = false;
         } else {
-          throw new Error('[XML Parse Error] the start tag is invalid: ' + xml);
+          throw new Error('[XML Parse Error] the start tag is invalid: ' + xml.substring(0,100));
         }
       }
 
