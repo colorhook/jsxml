@@ -1,6 +1,6 @@
 {
   "name": "node-jsxml",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "an XML parser for javascript and node.js",
   "keywords": [
     "xml",
@@ -19,6 +19,10 @@
     }
   ],
   "contributors": [
+    {
+      "name": "Tiago Freitas",
+      "url": "https://github.com/trmfreitas"
+    },
     {
       "name": "TimSchlechter",
       "url": "http://github.com/TimSchlechter"
