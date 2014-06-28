@@ -18,8 +18,8 @@
    * http://erik.eae.net/simplehtmlparser/simplehtmlparser.js
    */
   // Regular Expressions for parsing tags and attributes
-  var startTag = /^<([0-9a-zA-Z\$_]+:{0,1}[a-zA-Z0-9\$\-_]*)((?:\s+[a-zA-Z\$_]+:{0,1}[a-zA-Z0-9\$\-_]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/,
-    endTag = /^<\/([a-zA-Z0-9\$\-_:]+)[^>]*>/,
+  var startTag = /^<([0-9a-zA-Z\$_\.]+:{0,1}[a-zA-Z0-9\$\-_]*)((?:\s+[a-zA-Z\$_]+:{0,1}[a-zA-Z0-9\$\-_]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/,
+    endTag = /^<\/([a-zA-Z0-9\$\-_\.:]+)[^>]*>/,
     attr = /([a-zA-Z\$_]+:{0,1}[a-zA-Z0-9\$\-_]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g,
     _parseXML,
     trim,
@@ -208,7 +208,7 @@
           match[0].replace(startTag, parseStartTag);
           chars = false;
         } else {
-          throw new Error('[XML Parse Error] the start tag is invalid: ' + xml);
+          throw new Error('[XML Parse Error] the start tag is invalid: ' + xml.substring(0,100));
         }
       }
 
@@ -718,7 +718,12 @@
       start: function(tag, attrs, unary) {
         var xml;
         if (!current) {
-          xml = self;
+          if (XML.createMainDocument) {          
+              xml = new XML();
+              xml._parent = self;
+          } else {
+            xml = self;
+          }
         } else {
           xml = new XML();
           xml._parent = current;
@@ -772,12 +777,19 @@
         }
       },
       comment: function(value) {
+	    if (!current && XML.createMainDocument) {
+			current = self;
+		}
         var el = new XML();
         el._nodeKind = NodeKind.COMMENT;
         el._text = value;
         current && current._children.push(el);
       },
       instruction: function(value) {
+        if (!current && XML.createMainDocument) {
+			current = self;
+		}
+      	
         var el = new XML();
         el._nodeKind = NodeKind.PROCESSING_INSTRUCTIONS;
         el._text = value;
@@ -1498,42 +1510,42 @@
         return s + "<!" + this._text + ">";
       }
 
-      if (!this._qname) {
-        return "";
-      }
-      if (this._qname._ns.prefix) {
-        tag = this._qname._ns.prefix + ":" + this.localName();
-      } else {
-        tag = this.localName();
-      }
+      if (this._qname) {
+		 // _qname was defined so this is not the "self" document
+		  if (this._qname._ns.prefix) {
+			tag = this._qname._ns.prefix + ":" + this.localName();
+		  } else {
+			tag = this.localName();
+		  }
 
-      s += "<" + tag;
-      for (i = 0, l = ns.length; i < l; i++) {
-        var prefix = ns[i].prefix ? 'xmlns:' + ns[i].prefix : 'xmlns';
-        p.push({
-          label: prefix,
-          value: ns[i].uri
-        });
-      }
-      for (i = 0, l = attrs.length; i < l; i++) {
-        var q = attrs[i]._qname,
-          prefix = q._ns.prefix,
-          label;
-        if (prefix) {
-          label = prefix + ':' + q.localName;
-        } else {
-          label = q.localName;
-        }
-        p.push({
-          label: label,
-          value: attrs[i]._text
-        });
-      }
-      if (p.length > 0) {
-        for (i = 0, l = p.length; i < l; i++) {
-          s += " " + p[i].label + "=\"" + p[i].value + "\"";
-        }
-      }
+		  s += "<" + tag;
+		  for (i = 0, l = ns.length; i < l; i++) {
+			var prefix = ns[i].prefix ? 'xmlns:' + ns[i].prefix : 'xmlns';
+			p.push({
+			  label: prefix,
+			  value: ns[i].uri
+			});
+		  }
+		  for (i = 0, l = attrs.length; i < l; i++) {
+			var q = attrs[i]._qname,
+			  prefix = q._ns.prefix,
+			  label;
+			if (prefix) {
+			  label = prefix + ':' + q.localName;
+			} else {
+			  label = q.localName;
+			}
+			p.push({
+			  label: label,
+			  value: attrs[i]._text
+			});
+		  }
+		  if (p.length > 0) {
+			for (i = 0, l = p.length; i < l; i++) {
+			  s += " " + p[i].label + "=\"" + p[i].value + "\"";
+			}
+		  }
+	  }
       p = [];
       for (i = 0, l = children.length; i < l; i++) {
         var el = children[i],
@@ -1552,18 +1564,23 @@
         }
       }
       if (p.length == 0) {
-        s += "/>";
+        if (s.length>0) 
+            s += "/>";
       } else if (p.length == 1 && p[0].nodeKind() == NodeKind.TEXT) {
         s += ">";
         s += p[0]._toXMLString(0);
         s += "</" + tag + ">";
       } else {
-        s += ">";
+		if (this._qname) {
+            //only add this if there was a _qname -> meaning this is not the "self" document
+			s += ">";
+		}
         for (i = 0, l = p.length; i < l; i++) {
-          if (prettyPrinting) {
+          if (prettyPrinting && s!="") {
             s += "\n";
           }
-          s += p[i]._toXMLString(indent + (XML.prettyTab?1:XML.prettyIndent));
+		  
+          s += p[i]._toXMLString(indent + (XML.prettyTab?1:XML.prettyIndent) - (!this._qname?(XML.prettyTab?1:XML.prettyIndent):0));
         }
         if (prettyPrinting) {
           s += "\n";
@@ -1571,7 +1588,9 @@
             s += XML.prettyTab?"\t":" ";
           }
         }
-        s += "</" + tag + ">";
+		if (tag) {
+			s += "</" + tag + ">";
+		}
       }
       return s;
     },
@@ -1676,6 +1695,8 @@
    */
   merge(XML, {
 
+    //create first object as the main document containing comments, processing instructions and first level nodes
+    createMainDocument: false,
     ignoreComments: true,
     ignoreProcessingInstructions: true,
     ignoreWhitespace: true,
@@ -1689,6 +1710,7 @@
      */
     settings: function() {
       return {
+        createMainDocument: this.createMainDocument,
         ignoreComments: this.ignoreComments,
         ignoreProcessingInstructions: this.ignoreProcessingInstructions,
         ignoreWhitespace: this.ignoreWhitespace,
@@ -1711,6 +1733,7 @@
           XML[p] = sett[p];
         }
       }
+      assign("createMainDocument");
       assign("ignoreComments");
       assign("ignoreProcessingInstructions");
       assign("ignoreWhitespace");

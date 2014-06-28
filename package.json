@@ -38,7 +38,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "yui3": ""
+    "yui": ""
   },
   "scripts": {
     "test": "node tests/jsxml-test.js"
