@@ -1,10 +1,9 @@
-if(typeof exports != "undefined"){
+if (typeof exports !== "undefined") {
 	var YUI = require("yui").YUI;
 	var jsxml = require("../src/jsxml.js");
 }
-YUI().use('test', function(Y){
-
-
+YUI().use('test', function (Y) {
+  
 	var Assert = Y.Assert,
 		XML = jsxml.XML,
 		XMLList = jsxml.XMLList,
@@ -12,15 +11,15 @@ YUI().use('test', function(Y){
 		NodeKind = jsxml.NodeKind,
 		Namespace = jsxml.Namespace,
 		example = "<?xml version='1.0' encoding='utf-8'?>"
-			+"<xml xmlns='uri' xmlns:h='h'>sss"
-				+"<a>a"
-					+"<e>e</e>"
-					+"<? instruction ?>"
-				+"</a>"
-				+"<b>b</b>"
-				+"<c att='1'/>"
-				+"<p><![CDATA[inner tag: @#?&<>;'<p></p>]]></p>"
-			 +"</xml>";
+			+ "<xml xmlns='uri' xmlns:h='h'>sss"
+				+ "<a>a"
+					+ "<e>e</e>"
+					+ "<? instruction ?>"
+				+ "</a>"
+				+ "<b>b</b>"
+				+ "<c att='1'/>"
+				+ "<p><![CDATA[inner tag: @#?&<>;'<p></p>]]></p>"
+			 + "</xml>";
 	
 	//QName TestCase
 	var qnameTestCase = new Y.Test.Case({
@@ -833,6 +832,27 @@ YUI().use('test', function(Y){
 			Assert.areEqual("<ns:a xmlns:ns=\"uri\" m=\"1\">has attribute</ns:a>", xml.toXMLString());
 
 		},
+    testToXMLStringWithIgnoreWhitespace: function(){
+
+      var originalContent =
+          '<root>\n' +
+          '  <property>value</property>\n' +
+          '</root>';
+      
+      XML.setSettings({ignoreWhitespace: false});
+      var xml = new XML(originalContent);
+      var content = xml.toString();
+      XML.setSettings({ignoreWhitespace: true});
+      Assert.isFalse(content === originalContent);
+      
+      
+      var xml2 = new XML(originalContent);
+      var content2 = xml2.toString();
+      Assert.areEqual(originalContent, content2);
+      
+     
+      
+    },
 		testToString: function(){
 			var xml = new XML("<a>hello</a>");
 			Assert.areEqual("hello", xml.toString());
@@ -939,7 +959,7 @@ YUI().use('test', function(Y){
 			});
 			Assert.areEqual(1, count);
 		},
-        testCreateMainDocumentAndExport: function(){
+    testCreateMainDocumentAndExport: function(){
             jsxml.XML.setSettings({ignoreComments : false, ignoreProcessingInstructions : false, createMainDocument: true});
 			var xml = new XML("<a>xml</a>\n");
 			xml.child('a').setValue("new Value");

@@ -229,7 +229,7 @@
     }
 
     // Check the tag closed
-    if (stack.length) {
+    if (stack.length && !XML.htmlMode) {
       throw new Error("[XML Parse Error] There is tag not closed " + stack.last());
     }
 
@@ -265,11 +265,11 @@
         stack.length = 0;
         return;
       }
-      if (!stack.length) {
+      if (!stack.length && !XML.htmlMode) {
         throw new Error("[XML Parse Error] Cannot find the start tag for the end tag " + tagName);
       }
       var startTag = stack.last();
-      if (startTag != tagName) {
+      if (startTag !== tagName && !XML.htmlMode) {
         throw new Error("[XML Parse Error] End tag " + tagName + " is not match the start tag " + startTag);
       }
       stack.length = stack.length - 1;
@@ -277,25 +277,6 @@
         handler.end(startTag);
       }
       return;
-      // If no tag name is provided, clean shop
-      if (!tagName)
-        var pos = 0;
-
-      // Find the closest opened tag of the same type
-      else
-        for (var pos = stack.length - 1; pos >= 0; pos--)
-          if (stack[pos] == tagName)
-            break;
-
-      if (pos >= 0) {
-        // Close all the open elements, up the stack
-        for (var i = stack.length - 1; i >= pos; i--)
-          if (handler.end)
-            handler.end(stack[i]);
-
-          // Remove the open elements from the stack
-        stack.length = pos;
-      }
     }
   };
 
@@ -758,13 +739,14 @@
         }
       },
       chars: function(text, useCDATA) {
-        text = trim(text);
-        if (text == "" && XML.ignoreWhitespace) {
+        var trimed = trim(text);
+        if (trimed === "" && XML.ignoreWhitespace) {
           return;
         }
         var el = new XML();
         el._nodeKind = NodeKind.TEXT;
-        el._text = text;
+        el._text = trimed;
+        //el._originalText = text;
         el._useCDATA = useCDATA;
         current._children.push(el);
       },
@@ -777,9 +759,9 @@
         }
       },
       comment: function(value) {
-	    if (!current && XML.createMainDocument) {
-			current = self;
-		}
+        if (!current && XML.createMainDocument) {
+          current = self;
+        }
         var el = new XML();
         el._nodeKind = NodeKind.COMMENT;
         el._text = value;
@@ -787,8 +769,8 @@
       },
       instruction: function(value) {
         if (!current && XML.createMainDocument) {
-			current = self;
-		}
+          current = self;
+        }
       	
         var el = new XML();
         el._nodeKind = NodeKind.PROCESSING_INSTRUCTIONS;
@@ -1513,9 +1495,9 @@
       if (this._qname) {
 		 // _qname was defined so this is not the "self" document
 		  if (this._qname._ns.prefix) {
-			tag = this._qname._ns.prefix + ":" + this.localName();
+		    tag = this._qname._ns.prefix + ":" + this.localName();
 		  } else {
-			tag = this.localName();
+			  tag = this.localName();
 		  }
 
 		  s += "<" + tag;
@@ -1541,9 +1523,9 @@
 			});
 		  }
 		  if (p.length > 0) {
-			for (i = 0, l = p.length; i < l; i++) {
-			  s += " " + p[i].label + "=\"" + p[i].value + "\"";
-			}
+			  for (i = 0, l = p.length; i < l; i++) {
+			    s += " " + p[i].label + "=\"" + p[i].value + "\"";
+			  }
 		  }
 	  }
       p = [];
@@ -1571,15 +1553,14 @@
         s += p[0]._toXMLString(0);
         s += "</" + tag + ">";
       } else {
-		if (this._qname) {
-            //only add this if there was a _qname -> meaning this is not the "self" document
-			s += ">";
-		}
+		    if (this._qname) {
+          //only add this if there was a _qname -> meaning this is not the "self" document
+          s += ">";
+		    }
         for (i = 0, l = p.length; i < l; i++) {
           if (prettyPrinting && s!="") {
             s += "\n";
           }
-		  
           s += p[i]._toXMLString(indent + (XML.prettyTab?1:XML.prettyIndent) - (!this._qname?(XML.prettyTab?1:XML.prettyIndent):0));
         }
         if (prettyPrinting) {
@@ -1702,7 +1683,8 @@
     ignoreWhitespace: true,
     prettyIndent: 2,
     prettyPrinting: true,
-	prettyTab: false,
+	  prettyTab: false,
+    htmlMode: false,
 
     /**
      * @description get an object copy indicating the XML setting.
@@ -1716,7 +1698,8 @@
         ignoreWhitespace: this.ignoreWhitespace,
         prettyIndent: this.prettyIndent,
         prettyPrinting: this.prettyPrinting,
-        prettyTab: this.prettyTab
+        prettyTab: this.prettyTab,
+        htmlMode: this.htmlMode
       }
     },
     /**
@@ -1740,6 +1723,7 @@
       assign("prettyIndent");
       assign("prettyPrinting");
       assign("prettyTab");
+      assign("htmlMode");
     }
   });
 
