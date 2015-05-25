@@ -18,7 +18,7 @@
    * http://erik.eae.net/simplehtmlparser/simplehtmlparser.js
    */
   // Regular Expressions for parsing tags and attributes
-  var startTag = /^<([0-9a-zA-Z\$_\.]+:{0,1}[a-zA-Z0-9\$\-_]*)((?:\s+[a-zA-Z\$_]+:{0,1}[a-zA-Z0-9\$\-_]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/,
+  var startTag = /^<([0-9a-zA-Z\$_\.\-]+:{0,1}[a-zA-Z0-9\$\-_]*)((?:\s+[a-zA-Z\$_]+:{0,1}[a-zA-Z0-9\$\-_]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/,
     endTag = /^<\/([a-zA-Z0-9\$\-_\.:]+)[^>]*>/,
     attr = /([a-zA-Z\$_]+:{0,1}[a-zA-Z0-9\$\-_]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g,
     _parseXML,
