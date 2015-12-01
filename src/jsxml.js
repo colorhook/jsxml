@@ -1,12 +1,12 @@
 /*!
  * Copyright 2011 http://colorhook.com.
  * @author: <a href="colorhook@gmail.com">colorhook</a>
- * @version:0.3.0
+ * @version:0.4.0
  */
 /**
  * @preserve Copyright 2011 http://colorhook.com.
  * @author: <a href="colorhook@gmail.com">colorhook</a>
- * @version:0.3.0
+ * @version:0.4.0
  */
 
 (function() {
@@ -60,12 +60,6 @@
     for (var i in s2) {
       if (s2.hasOwnProperty(i)) {
         s1[i] = s2[i];
-      }
-    }
-    //fix IE toString() not Enumerable bug
-    if (!-[1, ]) {
-      if (s2.toString !== Object.prototype) {
-        s1.toString = s2.toString;
       }
     }
   };
@@ -132,7 +126,7 @@
       chars = true;
 
       //CDATA
-      if (xml.indexOf("<![CDATA[") == 0) {
+      if (xml.indexOf("<![CDATA[") === 0) {
 
         index = xml.indexOf("]]>");
         if (index > 0) {
@@ -146,7 +140,7 @@
           throw new Error('[XML Parse Error] the CDATA end tag not found: ' + xml);
         }
         chars = false;
-      } else if (xml.indexOf("<?") == 0) {
+      } else if (xml.indexOf("<?") === 0) {
 
         //Instruction
         index = xml.indexOf("?>");
@@ -160,7 +154,7 @@
           throw new Error('[XML Parse Error] the Instruction end tag not found: ' + xml);
         }
         chars = false;
-      } else if (xml.indexOf("<!--") == 0) {
+      } else if (xml.indexOf("<!--") === 0) {
 
         // Comment
         index = xml.indexOf("-->");
@@ -173,7 +167,7 @@
         } else {
           throw new Error('[XML Parse Error] the Comment end tag not found: ' + xml);
         }
-      } else if (xml.indexOf("<!") == 0) {
+      } else if (xml.indexOf("<!") === 0) {
 
         //doctype
         var m = xml.match(/<!DOCTYPE[^<>]*(<![^<>]*>)*[^<>]*>/i);
@@ -187,7 +181,7 @@
           xml = xml.substring(index);
           chars = false;
         }
-      } else if (xml.indexOf("</") == 0) {
+      } else if (xml.indexOf("</") === 0) {
 
         // end tag
         match = xml.match(endTag);
@@ -199,7 +193,7 @@
         } else {
           throw new Error('[XML Parse Error] the end tag is invalid: ' + xml);
         }
-      } else if (xml.indexOf("<") == 0) {
+      } else if (xml.indexOf("<") === 0) {
 
         // start tag
         match = xml.match(startTag);
@@ -223,7 +217,7 @@
       }
 
 
-      if (xml == last)
+      if (xml === last)
         throw new Error("[XML Parse Error] " + xml)
       last = xml;
     }
@@ -291,7 +285,7 @@
     if (len >= 2) {
       this.prefix = String(prefix);
       this.uri = String(uri);
-    } else if (len == 1) {
+    } else if (len === 1) {
       this.prefix = "";
       this.uri = String(prefix);
     } else {
@@ -341,9 +335,9 @@
     var len = arguments.length;
     if (len >= 2) {
       this.uri = String(uri);
-      this._ns = (uri && uri.constructor == Namespace) ? uri : new Namespace(uri);
+      this._ns = (uri && uri.constructor === Namespace) ? uri : new Namespace(uri);
       this.localName = String(localName);
-    } else if (len == 1) {
+    } else if (len === 1) {
       this.uri = "";
       this._ns = new Namespace();
       this.localName = String(uri);
@@ -381,7 +375,7 @@
      * @return Boolean
      */
     equals: function(qname) {
-      return this.localName == qname.localName && this._ns.equals(qname._ns);
+      return this.localName === qname.localName && this._ns.equals(qname._ns);
     }
   }
   /**
@@ -395,7 +389,7 @@
   QName._format = function(name, value) {
     var temp = name.split(":"),
       prefix, localName;
-    if (temp.length == 2) {
+    if (temp.length === 2) {
       prefix = temp[0];
       localName = temp[1];
     } else {
@@ -423,7 +417,7 @@
    * @return XML|XMLList
    */
   _getXMLIfLengthEqualOne = function(list) {
-    if (list._list && list.length() == 1) {
+    if (list._list && list.length() === 1) {
       return _getXMLIfLengthEqualOne(list._list[0]);
     }
     return list;
@@ -444,9 +438,9 @@
      * @return XMLList
      */
     _addXML: function(xml) {
-      if (xml.constructor == XML) {
+      if (xml.constructor === XML) {
         this._list.push(xml);
-      } else if (xml.constructor == XMLList) {
+      } else if (xml.constructor === XMLList) {
         this._list = this._list.concat(xml._list);
       }
       return this;
@@ -490,6 +484,15 @@
     children: function() {
       return this.child('*');
     },
+		/**
+     * @description remove the element or attribute from parent node
+     * @access public
+     */
+		remove: function() {
+			this.each(function(item) {
+				item.remove();
+			});
+		},
     /**
      * @description return a special attribute type child by parameter
      * @access public
@@ -558,7 +561,7 @@
     hasSimpleContent: function() {
       for (var i = 0, l = this._list.length; i < l; i++) {
         var item = this._list[i];
-        if (item.constructor == XMLList ||
+        if (item.constructor === XMLList ||
           item.hasComplexContent()) {
           return false;
         }
@@ -582,9 +585,9 @@
     text: function() {
       var xml = new XMLList();
       this.each(function(item) {
-        if (item.constructor == XML) {
+        if (item.constructor === XML) {
           var t = item.text();
-          if (t._text != "") {
+          if (t._text !== "") {
             xml._addXML(t);
           }
         }
@@ -599,7 +602,7 @@
     comments: function() {
       var xml = new XMLList();
       this.each(function(item) {
-        if (item.constructor == XML) {
+        if (item.constructor === XML) {
           xml._addXML(item.comments());
         }
       });
@@ -613,7 +616,7 @@
     processingInstructions: function() {
       var xml = new XMLList();
       this.each(function(item) {
-        if (item.constructor == XML) {
+        if (item.constructor === XML) {
           xml._addXML(item.processingInstructions());
         }
       });
@@ -692,8 +695,8 @@
     this._text = null;
     this._useCDATA = false;
 
-    var current,
-      self = this;
+    var current;
+    var self = this;
 
     _parseXML(str, {
       start: function(tag, attrs, unary) {
@@ -712,6 +715,7 @@
         xml._qname = QName._format(tag);
         for (var i in attrs) {
           var attr = new XML();
+					attr._parent = xml;
           attr._nodeKind = NodeKind.ATTRIBUTE;
           var _qname;
           if (attrs[i].name === 'xmlns') {
@@ -724,7 +728,7 @@
           if (prefix === 'xmlns') {
             var ns = new Namespace(_qname.localName, _qname.uri);
             xml.addNamespace(ns);
-            if (_qname.localName == xml._qname._ns.prefix) {
+            if (_qname.localName === xml._qname._ns.prefix) {
               xml.setNamespace(ns);
             }
           } else {
@@ -754,7 +758,7 @@
         if (current && current._parent) {
           current._parent._children.push(current);
           current = current._parent;
-        } else if (current == self) {
+        } else if (current === self) {
           current = null;
         }
       },
@@ -799,7 +803,7 @@
      * @return void
      */
     addNamespace: function(ns) {
-      if (ns.prefix != undefined) {
+      if (ns.prefix !== undefined) {
         this.removeNamespace(ns);
         this._namespaces.push(ns);
       }
@@ -812,7 +816,7 @@
      */
     removeNamespace: function(ns) {
       for (var i = 0, l = this._namespaces.length; i < l; i++) {
-        if (ns.prefix == this._namespaces[i].prefix) {
+        if (ns.prefix === this._namespaces[i].prefix) {
           this._namespaces.splice(i, 1);
           break;
         }
@@ -829,7 +833,7 @@
         return new Namespace();
       }
       for (var i = 0, l = this._namespaces.length; i < l; i++) {
-        if (prefix == this._namespaces[i].prefix) {
+        if (prefix === this._namespaces[i].prefix) {
           return this._namespaces[i];
         }
       }
@@ -842,7 +846,7 @@
      * @return void
      */
     setNamespace: function(ns) {
-      if (ns && ns.constructor == Namespace) {
+      if (ns && ns.constructor === Namespace) {
         this.addNamespace(ns);
         if (this._qname) {
           this._qname.uri = ns.uri;
@@ -964,7 +968,7 @@
         list = new XMLList();
       for (i = 0, l = attributes.length; i < l; i++) {
         item = attributes[i];
-        if (item._qname.localName == p || p == '*') {
+        if (item._qname.localName === p || p === '*') {
           list._addXML(item);
         }
       }
@@ -1002,21 +1006,41 @@
      */
     appendChild: function(child) {
       var cc = child.constructor;
-      if (cc == XML) {
+      if (cc === XML) {
         child._parent = this;
         this._children.push(child);
-      } else if (cc == XMLList) {
+      } else if (cc === XMLList) {
         child.each(function(item) {
           item._parent = this;
         });
         this._children = this._children.concat(child._list);
-      } else if (cc == String) {
+      } else if (cc === String) {
         var c = this._createTextNode(child);
         c._parent = this;
         this._children.push(c);
       }
       return this;
     },
+		/**
+     * @description remove from parent node
+     * @access public
+     */
+		remove: function() {
+			if (!this._parent) {
+				return;
+			}
+			var nk = this._nodeKind;
+			var list;
+			if (nk === NodeKind.ATTRIBUTE) {
+				list = this._parent._attributes;
+			} else {
+				list = this._parent._children;
+			}
+			var index = list.indexOf(this);
+			if (index !== -1) {
+				list.splice(i, 1)
+			}
+		},
     /**
      * @description prepend child to the children list
      * @access public
@@ -1026,10 +1050,10 @@
      */
     prependChild: function(child) {
       var cc = child.constructor;
-      if (cc == XML) {
+      if (cc === XML) {
         child._parent = this;
         this._children.unshift(child);
-      } else if (cc == XMLList) {
+      } else if (cc === XMLList) {
         child.each(function(item) {
           item._parent = this;
         });
@@ -1056,13 +1080,13 @@
       for (i = 0, l = _c.length; i < l; i++) {
         var item = _c[i],
           nk = item.nodeKind();
-        if (nk == NodeKind.TEXT) {
+        if (nk === NodeKind.TEXT) {
           if (preTextEl) {
             item._text = preTextEl._text + item._text;
             _c[i - 1] = null;
           }
           preTextEl = item;
-        } else if (nk == NodeKind.ELEMENT) {
+        } else if (nk === NodeKind.ELEMENT) {
           item.normalize();
           preTextEl = null;
         }
@@ -1087,9 +1111,9 @@
       for (i = 0, l = _c.length; i < l; i++) {
         var item = _c[i],
           nk = item.nodeKind();
-        if (nk == NodeKind.ELEMENT || nk == NodeKind.TEXT ||
-          (nk == NodeKind.COMMENT && !XML.ignoreComments) ||
-          (nk == NodeKind.PROCESSING_INSTRUCTIONS && !XML.ignoreProcessingInstructions)) {
+        if (nk === NodeKind.ELEMENT || nk === NodeKind.TEXT ||
+          (nk === NodeKind.COMMENT && !XML.ignoreComments) ||
+          (nk === NodeKind.PROCESSING_INSTRUCTIONS && !XML.ignoreProcessingInstructions)) {
           c.push(item);
         }
       }
@@ -1106,14 +1130,14 @@
         i,
         l,
         c = this._getFilterChildren();
-      if (typeof p == 'number') {
-        if (c.length != 0 && c[p]) {
+      if (typeof p === 'number') {
+        if (c.length !== 0 && c[p]) {
           list._addXML(c[p]);
         }
       } else {
         for (i = 0, l = c.length; i < l; i++) {
           var xml = c[i];
-          if (xml.localName() == p || p == "*") {
+          if (xml.localName() === p || p === "*") {
             list._addXML(xml);
           }
         }
@@ -1154,7 +1178,7 @@
      * @description replace a child by new content.
      * @access public
      * @param a{string} the child need to be replaced
-     * @param b{String | XML | XMLList} the new content
+     * @param b{String | XML | XMLList | null} the new content
      * @return XML
      */
     replace: function(a, b) {
@@ -1167,29 +1191,31 @@
       for (i = 0, l = c.length; i < l; i++) {
         var xml = c[i],
           nk = xml.nodeKind();
-        if ((xml.localName() == a || a == "*") && nk == NodeKind.ELEMENT) {
-          if (replacedIndex == -1) {
+        if ((xml.localName() === a || a === "*") && nk === NodeKind.ELEMENT) {
+          if (replacedIndex === -1) {
             replacedIndex = i;
-            var cc = b.constructor;
-            if (cc == XML) {
-              b._parent = this;
-              newChildren.push(b);
-            } else if (cc == XMLList) {
-              b.each(function(item) {
-                item._parent = this;
-              });
-              newChildren = newChildren.concat(b._list);
-            } else if (cc === String) {
-              var t = this._createTextNode(b);
-              t._parent = this;
-              newChildren.push(t);
-            }
+						if (b) {
+							var cc = b.constructor;
+							if (cc === XML) {
+								b._parent = this;
+								newChildren.push(b);
+							} else if (cc === XMLList) {
+								b.each(function(item) {
+									item._parent = this;
+								});
+								newChildren = newChildren.concat(b._list);
+							} else if (cc === String) {
+								var t = this._createTextNode(b);
+								t._parent = this;
+								newChildren.push(t);
+							}
+						}
           }
         } else {
           newChildren.push(xml);
         }
       }
-      if (replacedIndex != -1) {
+      if (replacedIndex !== -1) {
         this._children = newChildren;
         this.normalize();
       }
@@ -1202,7 +1228,7 @@
      * @return XML | XMLList
      */
     elements: function(p) {
-      if (arguments.length == 0) {
+      if (arguments.length === 0) {
         p = '*';
       }
       var list = new XMLList(),
@@ -1212,7 +1238,7 @@
 
       for (i = 0, l = c.length; i < l; i++) {
         var xml = c[i];
-        if ((xml.localName() == p || p == '*') && xml.nodeKind() == NodeKind.ELEMENT) {
+        if ((xml.localName() === p || p === '*') && xml.nodeKind() === NodeKind.ELEMENT) {
           list._addXML(xml);
         }
       }
@@ -1225,7 +1251,7 @@
      * @return XML | XMLList
      */
     descendants: function(p) {
-      if (arguments.length == 0) {
+      if (arguments.length === 0) {
         p = '*';
       }
       var list = new XMLList(),
@@ -1236,10 +1262,10 @@
       for (i = 0, l = c.length; i < l; i++) {
         var xml = c[i],
           nk = xml.nodeKind();
-        if ((xml.localName() == p || p == '*') && (nk == NodeKind.ELEMENT || nk == NodeKind.TEXT)) {
+        if ((xml.localName() === p || p === '*') && (nk === NodeKind.ELEMENT || nk === NodeKind.TEXT)) {
           list._addXML(xml);
         }
-        if (xml._nodeKind == NodeKind.ELEMENT) {
+        if (xml._nodeKind === NodeKind.ELEMENT) {
           list._addXML(xml.descendants(p));
         }
       }
@@ -1257,15 +1283,15 @@
       if (child1 == null) {
         return this.appendChild(child2);
       }
-      if (child1.constructor != XML) {
+      if (child1.constructor !== XML) {
         return undefined;
       }
       var cc = child1.childIndex();
-      if (child1._parent == this && cc != -1) {
-        if (child2.constructor == XML) {
+      if (child1._parent === this && cc !== -1) {
+        if (child2.constructor === XML) {
           child2._parent = this;
           this._children.splice(cc, 0, child2);
-        } else if (child2.constructor == XMLList) {
+        } else if (child2.constructor === XMLList) {
           for (var i = 0, l = child2._list.length; i < l; i++) {
             child2._list[i]._parent = this;
             this._children.splice(cc + i, 0, child2._list[i]);
@@ -1290,15 +1316,15 @@
       if (child1 == null) {
         return this.prependChild(child2);
       }
-      if (child1.constructor != XML) {
+      if (child1.constructor !== XML) {
         return undefined;
       }
       var cc = child1.childIndex();
-      if (child1._parent == this && cc != -1) {
-        if (child2.constructor == XML) {
+      if (child1._parent === this && cc !== -1) {
+        if (child2.constructor === XML) {
           child2._parent = this;
           this._children.splice(cc + 1, 0, child2);
-        } else if (child2.constructor == XMLList) {
+        } else if (child2.constructor === XMLList) {
           for (var i = 0, l = child2._list.length; i < l; i++) {
             child2._list[i]._parent = this;
             this._children.splice(cc + 1 + i, 0, child2._list[i]);
@@ -1357,7 +1383,7 @@
 
       for (i = 0, l = c.length; i < l; i++) {
         var xml = c[i];
-        if (xml.nodeKind() == NodeKind.COMMENT) {
+        if (xml.nodeKind() === NodeKind.COMMENT) {
           list._addXML(xml);
         }
       }
@@ -1397,7 +1423,7 @@
       for (i = 0, l = c.length; i < l; i++) {
 
         var xml = c[i];
-        if (xml.nodeKind && xml.nodeKind() == NodeKind.COMMENT) {
+        if (xml.nodeKind && xml.nodeKind() === NodeKind.COMMENT) {
           list._addXML(xml);
         }
       }
@@ -1417,7 +1443,7 @@
       for (i = 0, l = c.length; i < l; i++) {
 
         var xml = c[i];
-        if (xml.nodeKind && xml.nodeKind() == NodeKind.PROCESSING_INSTRUCTIONS) {
+        if (xml.nodeKind && xml.nodeKind() === NodeKind.PROCESSING_INSTRUCTIONS) {
           list._addXML(xml);
         }
       }
@@ -1443,9 +1469,11 @@
       }
       for (i = 0, l = this._attributes.length; i < l; i++) {
         xml._attributes[i] = this._attributes[i].copy();
+				xml._attributes[i]._parent = xml;
       }
       for (i = 0, l = this._children.length; i < l; i++) {
         xml._children[i] = this._children[i].copy();
+				xml._children[i]._parent = xml;
       }
       return xml;
     },
@@ -1476,19 +1504,19 @@
         s += this._doctypes[i]._toXMLString(indent) + "\n";
       }
 
-      if (nk == NodeKind.ATTRIBUTE) {
+      if (nk === NodeKind.ATTRIBUTE) {
         return s + this._text;
-      } else if (nk == NodeKind.TEXT) {
+      } else if (nk === NodeKind.TEXT) {
         if (this._useCDATA) {
           return s + "<![CDATA[" + this._text + "]]>";
         } else {
           return s + replaceToEntity(this._text);
         }
-      } else if (nk == NodeKind.COMMENT) {
+      } else if (nk === NodeKind.COMMENT) {
         return s + "<!--" + this._text + "-->";
-      } else if (nk == NodeKind.PROCESSING_INSTRUCTIONS) {
+      } else if (nk === NodeKind.PROCESSING_INSTRUCTIONS) {
         return s + "<?" + this._text + "?>";
-      } else if (nk == NodeKind.DOCTYPE) {
+      } else if (nk === NodeKind.DOCTYPE) {
         return s + "<!" + this._text + ">";
       }
 
@@ -1533,22 +1561,22 @@
         var el = children[i],
           enk = el.nodeKind();
 
-        if (enk == NodeKind.ELEMENT) {
+        if (enk === NodeKind.ELEMENT) {
           p.push(el);
-        } else if (enk == NodeKind.COMMENT && !XML.ignoreComments) {
+        } else if (enk === NodeKind.COMMENT && !XML.ignoreComments) {
           p.push(el);
-        } else if (enk == NodeKind.PROCESSING_INSTRUCTIONS && !XML.ignoreProcessingInstructions) {
+        } else if (enk === NodeKind.PROCESSING_INSTRUCTIONS && !XML.ignoreProcessingInstructions) {
           p.push(el);
-        } else if (enk == NodeKind.TEXT) {
+        } else if (enk === NodeKind.TEXT) {
           p.push(el);
-        } else if (enk == NodeKind.DOCTYPE) {
+        } else if (enk === NodeKind.DOCTYPE) {
           p.push(el);
         }
       }
-      if (p.length == 0) {
+      if (p.length === 0) {
         if (s.length>0) 
             s += "/>";
-      } else if (p.length == 1 && p[0].nodeKind() == NodeKind.TEXT) {
+      } else if (p.length === 1 && p[0].nodeKind() === NodeKind.TEXT) {
         s += ">";
         s += p[0]._toXMLString(0);
         s += "</" + tag + ">";
@@ -1592,13 +1620,13 @@
       if (this.hasComplexContent()) {
         return this.toXMLString();
       }
-      if (this.nodeKind() == NodeKind.TEXT || this.nodeKind() == NodeKind.ATTRIBUTE) {
+      if (this.nodeKind() === NodeKind.TEXT || this.nodeKind() === NodeKind.ATTRIBUTE) {
         return this._text;
       }
       var s = "";
       for (var i = 0, l = this._children.length; i < l; i++) {
         var el = this._children[i];
-        if (el._nodeKind == NodeKind.TEXT) {
+        if (el._nodeKind === NodeKind.TEXT) {
           if (el._useCDATA) {
             s += el._text;
           } else {
@@ -1627,14 +1655,14 @@
      */
     getValue: function() {
       var nk = this._nodeKind;
-      if (nk == NodeKind.TEXT) {
+      if (nk === NodeKind.TEXT) {
         if (!this._useCDATA && containsEntity(this._text)) {
           return replaceFromEntity(this._text);
         }
         return this._text;
-      } else if (nk == NodeKind.ATTRIBUTE) {
+      } else if (nk === NodeKind.ATTRIBUTE) {
         return this._text;
-      } else if (nk == NodeKind.ELEMENT && this.hasSimpleContent()) {
+      } else if (nk === NodeKind.ELEMENT && this.hasSimpleContent()) {
         var t = this.text();
         if (t.getValue) {
           return t.getValue();
@@ -1651,16 +1679,16 @@
      */
     setValue: function(val) {
       var nk = this._nodeKind;
-      if (nk == NodeKind.TEXT || nk == NodeKind.ATTRIBUTE || nk == NodeKind.COMMENT || nk == NodeKind.PROCESSING_INSTRUCTIONS) {
+      if (nk === NodeKind.TEXT || nk === NodeKind.ATTRIBUTE || nk === NodeKind.COMMENT || nk === NodeKind.PROCESSING_INSTRUCTIONS) {
         this._text = val;
-      } else if (nk == NodeKind.ELEMENT && this.hasSimpleContent()) {
+      } else if (nk === NodeKind.ELEMENT && this.hasSimpleContent()) {
         var c = [],
           newText = this._createTextNode(val);
         newText._parent = this;
         c.push(newText);
         for (var i = 0, l = this._children.length; i < l; i++) {
           var item = this._children[i];
-          if (item._nodeKind != NodeKind.TEXT) {
+          if (item._nodeKind !== NodeKind.TEXT) {
             c.push(item);
           }
         }
@@ -1744,7 +1772,7 @@
   };
 
   //support for nodejs
-  if (typeof exports != "undefined") {
+  if (typeof exports !== "undefined") {
     for (var i in jsxml) {
       exports[i] = jsxml[i];
     }

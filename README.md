@@ -125,18 +125,18 @@ var childA = xml.child('a');
 childA.setValue("newValue");
 ```
 
-You can regenerate the XML
+You can regenerate the XML Content
 
-```javascript
+```
 var str = xml.toXMLString();
 ```
 
 While dealing with a list of childs in XML tree, you should use XMLList API:
 
-```javascript
+```
 var list = xml.child("item");
 list.each(function(item, index){
-//item is an XML
+	//item is an XML
 });
 ```
 

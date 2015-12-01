@@ -277,6 +277,15 @@ YUI().use('test', function (Y) {
 			Assert.areEqual(list.toString(), listCopy.toString(), 'listCopy should has a same toString() value');
 			Assert.areEqual(list.toXMLString(), listCopy.toXMLString(), 'listCopy should has a same toXMLString() value');
 		},
+		testRemove: function() {
+			var xml = new XML('<xml><a></a><a></a><a b="1" c="2"></a><d></d></xml>');
+			var list = xml.child('a');
+			list.remove();
+			Assert.areEqual(xml.toXMLString(), '<xml>\n  <d/>\n</xml>', 'XMLList instance remove method should remove the node from original parent xml');
+			xml = new XML('<xml m="2" n="3"></xml>');
+			xml.attribute("m").remove();
+			Assert.areEqual(xml.toXMLString(), '<xml n="3"/>', 'XMLList instance remove method should remove the attribute from original parent xml');
+		},
 		//extension for javascript
 		testItem: function(){
 			var xml = new XML("<a><b>1</b><b>2</b></a>");
@@ -675,6 +684,15 @@ YUI().use('test', function (Y) {
 			result = xml.insertChildAfter(null, "what");
 			Assert.isNotUndefined(result, "result should not be undefined");
 			Assert.areEqual(xmlCopy.toXMLString(), xml.toXMLString())
+		},
+		testRemove: function(){
+			var xml = new XML("<a><b></b></a>");
+			xml.child('b').remove();
+			Assert.areEqual(xml.toXMLString(), new XML("<a></a>").toXMLString());
+			
+			xml = new XML("<a m='1' n='2'><b></b></a>");
+			xml.attribute('*').remove();
+			Assert.areEqual(xml.toXMLString(), new XML("<a><b></b></a>").toXMLString());
 		},
 		testParent: function(){
 			var xml = new XML("<a><b></b></a>");
