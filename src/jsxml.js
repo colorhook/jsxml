@@ -1,12 +1,12 @@
 /*!
  * Copyright 2011 http://colorhook.com.
  * @author: <a href="colorhook@gmail.com">colorhook</a>
- * @version:0.4.0
+ * @version:0.7.0
  */
 /**
  * @preserve Copyright 2011 http://colorhook.com.
  * @author: <a href="colorhook@gmail.com">colorhook</a>
- * @version:0.4.0
+ * @version:0.7.0
  */
 
 (function() {
