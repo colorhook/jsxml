@@ -1194,22 +1194,22 @@
         if ((xml.localName() === a || a === "*") && nk === NodeKind.ELEMENT) {
           if (replacedIndex === -1) {
             replacedIndex = i;
-						if (b) {
-							var cc = b.constructor;
-							if (cc === XML) {
-								b._parent = this;
-								newChildren.push(b);
-							} else if (cc === XMLList) {
-								b.each(function(item) {
-									item._parent = this;
-								});
-								newChildren = newChildren.concat(b._list);
-							} else if (cc === String) {
-								var t = this._createTextNode(b);
-								t._parent = this;
-								newChildren.push(t);
-							}
-						}
+            if (b) {
+              var cc = b.constructor;
+              if (cc === XML) {
+                b._parent = this;
+                newChildren.push(b);
+              } else if (cc === XMLList) {
+                b.each(function(item) {
+                  item._parent = this;
+                });
+                newChildren = newChildren.concat(b._list);
+              } else if (cc === String) {
+                var t = this._createTextNode(b);
+                t._parent = this;
+                newChildren.push(t);
+              }
+            }
           }
         } else {
           newChildren.push(xml);
