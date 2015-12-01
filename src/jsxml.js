@@ -484,15 +484,15 @@
     children: function() {
       return this.child('*');
     },
-		/**
+    /**
      * @description remove the element or attribute from parent node
      * @access public
      */
-		remove: function() {
-			this.each(function(item) {
-				item.remove();
-			});
-		},
+    remove: function() {
+      this.each(function(item) {
+        item.remove();
+      });
+    },
     /**
      * @description return a special attribute type child by parameter
      * @access public
@@ -1021,26 +1021,26 @@
       }
       return this;
     },
-		/**
+    /**
      * @description remove from parent node
      * @access public
      */
-		remove: function() {
-			if (!this._parent) {
-				return;
-			}
-			var nk = this._nodeKind;
-			var list;
-			if (nk === NodeKind.ATTRIBUTE) {
-				list = this._parent._attributes;
-			} else {
-				list = this._parent._children;
-			}
-			var index = list.indexOf(this);
-			if (index !== -1) {
-				list.splice(i, 1)
-			}
-		},
+    remove: function() {
+      if (!this._parent) {
+        return;
+      }
+      var nk = this._nodeKind;
+      var list;
+      if (nk === NodeKind.ATTRIBUTE) {
+        list = this._parent._attributes;
+      } else {
+        list = this._parent._children;
+      }
+      var index = list.indexOf(this);
+      if (index !== -1) {
+        list.splice(i, 1)
+      }
+    },
     /**
      * @description prepend child to the children list
      * @access public
