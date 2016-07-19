@@ -25,10 +25,10 @@ in HTML file, import using &lt;script&gt; elements.
 <script src="jsxml.js"></script>
 ```
 
-in Node, import using require function.
+in Node, import using `require` function.
 
 ```javascript
-var jsxml = require("node-jsxml");
+const jsxml = require("node-jsxml");
 ```
 
 support AMD, CMD. Big thanks to [TimSchlechter](https://github.com/TimSchlechter).
@@ -62,40 +62,76 @@ var xml = new XML("<spring>" +
 		       "<element value='xml'/>" +
 		       "<element value='parser'/>" +
 		     "</list>" +
-                  "</spring>");
+            "</spring>");
+```
 
-//find child nodes
+find special childs
+
+```javascript
 var child = xml.child('list');
+```
 
-//print the xml string
+find all children by *
+
+```javascript
+var children = xml.child('*');
+```
+
+print the xml string
+
+```javascript
 console.log(xml.toXMLString());
+```
 
-//modify namespace
+modify namespace
+
+```javascript
 xml.addNamespace(new Namespace("ns", "http://colorhook.com"));
 xml.children().addNamespace(new Namespace("prefix", "uri"));
 console.log(xml.toXMLString());
+```
 
-//find descendants nodes
+find descendants nodes
+
+```javascript
 var descendants = xml.descendants('element');
+```
 
-//get all children
+get all children
+
+```javascript
 var children = xml.children();
 //or
 var children = xml.child('*');
+```
 
-//get text node
+get text node
+
+```javascript
 var text = xml.text();
+```
 
-//get element node
+get element node
+
+```javascript
 var elements = xml.elements();
+```
 
-//get comment node
+get comment node
+
+```javascript
 var comments = xml.comments();
+```
 
-//get attribute
+get attribute
+
+```javascript
 var attribute = xml.attribute("id");
+```
 
-//get all attributes
+get all attributes
+
+```javascript
 var attributes = xml.attributes();
 ```
 
@@ -127,13 +163,13 @@ childA.setValue("newValue");
 
 You can regenerate the XML Content
 
-```
+```javascript
 var str = xml.toXMLString();
 ```
 
 While dealing with a list of childs in XML tree, you should use XMLList API:
 
-```
+```javascript
 var list = xml.child("item");
 list.each(function(item, index){
 	//item is an XML

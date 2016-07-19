@@ -1,6 +1,6 @@
 {
   "name": "node-jsxml",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "an XML parser for javascript and node.js",
   "keywords": [
     "xml",
@@ -34,6 +34,10 @@
     {
       "name": "Ron Valstar",
       "url": "http://github.com/Sjeiti"
+    },
+    {
+      "name": "bhishp",
+      "url": "https://github.com/bhishp"
     }
   ],
   "bugs": {
