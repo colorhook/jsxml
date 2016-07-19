@@ -1038,7 +1038,7 @@
       }
       var index = list.indexOf(this);
       if (index !== -1) {
-        list.splice(i, 1)
+        list.splice(index, 1)
       }
     },
     /**
