@@ -1,12 +1,12 @@
 /*!
  * Copyright 2011 http://github.com/colorhook/jsxml
  * @author: <a href="colorhook@gmail.com">colorhook</a>
- * @version:0.8.0
+ * @version:0.9.0
  */
 /**
  * @preserve Copyright 2011 http://github.com/colorhook/jsxml
  * @author: <a href="colorhook@gmail.com">colorhook</a>
- * @version:0.8.0
+ * @version:0.9.0
  */
 
 (function() {
@@ -18,9 +18,9 @@
    * http://erik.eae.net/simplehtmlparser/simplehtmlparser.js
    */
   // Regular Expressions for parsing tags and attributes
-  var startTag = /^<([0-9a-zA-Z\$_\.\-]+:{0,1}[a-zA-Z0-9\$\-_]*)((?:\s+[a-zA-Z\$_]+:{0,1}[a-zA-Z0-9\$\-_]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/,
+  var startTag = /^<([0-9a-zA-Z\$_\.\-]+:{0,1}[a-zA-Z0-9\$\-\._]*)((?:\s+[a-zA-Z\$_]+:{0,1}[a-zA-Z0-9\$\-\._]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/,
     endTag = /^<\/([a-zA-Z0-9\$\-_\.:]+)[^>]*>/,
-    attr = /([a-zA-Z\$_]+:{0,1}[a-zA-Z0-9\$\-_]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g,
+    attr = /([a-zA-Z\$_]+:{0,1}[a-zA-Z0-9\$\-\._]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g,
     _parseXML,
     trim,
     merge,
@@ -922,7 +922,7 @@
       if (this._qname == null) {
         return;
       }
-      if (/^[a-zA-Z]+[a-zA-Z0-9]*$/.test(name)) {
+      if (/^[a-zA-Z\$_]+[a-zA-Z0-9\$\-_\.]*$/.test(name)) {
         this._qname.uri = "";
         this._qname.localName = name;
       } else {
@@ -939,7 +939,7 @@
       if (this._qname == null) {
         return;
       }
-      if (/^[a-zA-Z\$_]+[a-zA-Z0-9\$\-_]*$/.test(name)) {
+      if (/^[a-zA-Z\$_]+[a-zA-Z0-9\$\-_\.]*$/.test(name)) {
         this._qname.localName = name;
       } else {
         throw new Error("invalid value for XML localName");

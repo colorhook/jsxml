@@ -413,6 +413,10 @@ YUI().use('test', function (Y) {
 			xml.setName("newName");
 			Assert.areEqual(xml.name(), "newName");
 			Assert.areEqual(xml.localName(), "newName");
+
+			xml.setName("newName.withSubName");
+			Assert.areEqual(xml.name(), "newName.withSubName");
+			Assert.areEqual(xml.localName(), "newName.withSubName");
 			
 			qname = new QName(ns, "localName");
 			xml._qname = qname;
@@ -456,6 +460,12 @@ YUI().use('test', function (Y) {
 			}catch(e){ faild = true;};
 			Assert.isTrue(faild);
 
+		},
+		testNameWithDot: function() {
+			var xml = new XML('<a.b c.d="true" />')
+			Assert.areEqual(xml.localName(), 'a.b');
+			xml = new XML('<x:a.b xmlns:x="test" c.d="true" />')
+			Assert.areEqual(xml.localName(), 'a.b');
 		},
 		testNamespaceDeclaration: function(){
 			var xml = new XML();
@@ -755,7 +765,7 @@ YUI().use('test', function (Y) {
 			Assert.areEqual(p.toXMLString(), xml.descendants().toXMLString(), "* descendants should be equal");
 		},
 		testAttribute: function(){
-			var xml = new XML("<a b='1' c='2'/>");
+			var xml = new XML("<a b='1' c='2' d.f='3'/>");
 			var attr = xml.attribute('b');
 			Assert.areEqual(NodeKind.ATTRIBUTE, attr.nodeKind());
 			Assert.areEqual('1', attr._text, 'attr._text should be 1');
@@ -764,6 +774,9 @@ YUI().use('test', function (Y) {
 			attr = xml.attribute('c');
 			Assert.areEqual('2', attr.toString());
 			Assert.areEqual('2', attr.toXMLString());
+			attr = xml.attribute('d.f');
+			Assert.areEqual('3', attr.toString());
+			Assert.areEqual('3', attr.toXMLString());
 		},
 		testAttributes: function(){
 			var xml = new XML("<a b='1' c='2'/>");
