@@ -1,6 +1,6 @@
 {
   "name": "node-jsxml",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "an XML parser for javascript and node.js",
   "keywords": [
     "xml",

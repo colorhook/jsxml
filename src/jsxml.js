@@ -1,12 +1,12 @@
 /*!
  * Copyright 2011 http://github.com/colorhook/jsxml
  * @author: <a href="colorhook@gmail.com">colorhook</a>
- * @version:0.9.0
+ * @version:0.10.0
  */
 /**
  * @preserve Copyright 2011 http://github.com/colorhook/jsxml
  * @author: <a href="colorhook@gmail.com">colorhook</a>
- * @version:0.9.0
+ * @version:0.10.0
  */
 
 (function() {
@@ -283,8 +283,8 @@
   Namespace = function(prefix, uri) {
     var len = arguments.length;
     if (len >= 2) {
-      this.prefix = String(prefix);
-      this.uri = String(uri);
+      this.prefix = prefix ? String(prefix) : "";
+      this.uri = uri ? String(uri) : ""
     } else if (len === 1) {
       this.prefix = "";
       this.uri = String(prefix);
@@ -334,8 +334,13 @@
   QName = function(uri, localName) {
     var len = arguments.length;
     if (len >= 2) {
-      this.uri = String(uri);
-      this._ns = (uri && uri.constructor === Namespace) ? uri : new Namespace(uri);
+      if (uri && uri.constructor === Namespace) {
+        this.uri = uri.uri ? uri.uri : ''
+        this._ns = uri
+      } else {
+        this.uri = uri ? "" : String(uri)
+        this._ns = new Namespace(uri)
+      }
       this.localName = String(localName);
     } else if (len === 1) {
       this.uri = "";
@@ -922,9 +927,9 @@
       if (this._qname == null) {
         return;
       }
-      if (/^[a-zA-Z\$_]+[a-zA-Z0-9\$\-_\.]*$/.test(name)) {
-        this._qname.uri = "";
-        this._qname.localName = name;
+      var regexp = /^[a-zA-Z\$_]+[\:a-zA-Z0-9\$\-_\.]*$/
+      if (regexp.test(name) && name.split(':').length <= 2) {
+        this._qname = QName._format(name)
       } else {
         throw new Error("invalid value for XML name");
       }
