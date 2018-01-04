@@ -18,9 +18,9 @@
    * http://erik.eae.net/simplehtmlparser/simplehtmlparser.js
    */
   // Regular Expressions for parsing tags and attributes
-  var startTag = /^<([0-9a-zA-Z\$_\.\-]+:{0,1}[a-zA-Z0-9\$\-\._]*)((?:\s+[a-zA-Z\$_]+:{0,1}[a-zA-Z0-9\$\-\._]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/,
-    endTag = /^<\/([a-zA-Z0-9\$\-_\.:]+)[^>]*>/,
-    attr = /([a-zA-Z\$_]+:{0,1}[a-zA-Z0-9\$\-\._]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g,
+  var startTag = /^<([0-9A-zÀ-ÿ\$_\.\-]+:{0,1}[A-zÀ-ÿ0-9\$\-\._]*)((?:\s+[A-zÀ-ÿ\$_]+:{0,1}[A-zÀ-ÿ0-9\$\-\._]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/,
+    endTag = /^<\/([A-zÀ-ÿ0-9\$\-_\.:]+)[^>]*>/,
+    attr = /([A-zÀ-ÿ\$_]+:{0,1}[A-zÀ-ÿ0-9\$\-\._]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g,
     _parseXML,
     trim,
     merge,
@@ -283,8 +283,8 @@
   Namespace = function(prefix, uri) {
     var len = arguments.length;
     if (len >= 2) {
-      this.prefix = prefix ? String(prefix) : "";
-      this.uri = uri ? String(uri) : ""
+      this.prefix = String(prefix);
+      this.uri = String(uri);
     } else if (len === 1) {
       this.prefix = "";
       this.uri = String(prefix);
@@ -338,7 +338,7 @@
         this.uri = uri.uri ? uri.uri : ''
         this._ns = uri
       } else {
-        this.uri = uri ? "" : String(uri)
+        this.uri = String(uri)
         this._ns = new Namespace(uri)
       }
       this.localName = String(localName);
